@@ -1,0 +1,9 @@
+src/*.egg*/
+*.py[co]
+*.sqlite3
+.coverage
+build/
+dist/
+coverage.xml
+.pytest_cache/
+.tox/

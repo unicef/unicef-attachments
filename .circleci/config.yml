@@ -1,0 +1,73 @@
+version: 2
+jobs:
+  build:
+    working_directory: ~/code
+    docker:
+      - image: circleci/python:3.6
+        environment:
+          PGHOST: 127.0.0.1
+          DATABASE_URL: "postgres://postgres:postgres@localhost:5432/test_unicef_attachments"
+      - image: circleci/postgres:9.5-alpine
+        environment:
+          POSTGRES_USER: postgres
+          PGUSER: postgres
+          POSTGRES_DB: test_unicef_attachments
+          POSTGRES_PASSWORD: postgres
+    steps:
+      - checkout
+      - run:
+          name: run tests
+          command: |
+            export PATH=$PATH:/home/circleci/.local/bin
+            pip install tox --user
+            tox -r
+  package:
+    working_directory: ~/code
+    docker:
+      - image: circleci/python:3.6
+        environment:
+          PGHOST: 127.0.0.1
+          DATABASE_URL: "postgres://postgres:postgres@localhost:5432/test_unicef_attachments"
+      - image: circleci/postgres:9.5-alpine
+        environment:
+          POSTGRES_USER: postgres
+          PGUSER: postgres
+          POSTGRES_DB: test_unicef_attachments
+          POSTGRES_PASSWORD: postgres
+    steps:
+      - checkout
+      - run:
+          name: verify git tag vs version
+          command: |
+            python3 setup.py verify
+      - run:
+          name: init .pypirc
+          command: |
+            echo -e "[distutils]" >> ~/.pypirc
+            echo -e "index-servers =" >> ~/.pypirc
+            echo -e "    pypi" >> ~/.pypirc
+            echo -e "" >> ~/.pypirc
+            echo -e "[pypi]" >> ~/.pypirc
+            echo -e "username: $PYPI_USERNAME" >> ~/.pypirc
+            echo -e "password: $PYPI_PASSWORD" >> ~/.pypirc
+      - run:
+          name: create and upload package
+          command: |
+            python setup.py sdist upload
+
+workflows:
+  version: 2
+  build_and_package:
+    jobs:
+      - build:
+          filters:
+            tags:
+              only: /.*/
+      - package:
+          requires:
+            - build
+          filters:
+            tags:
+              only: /.*/
+            branches:
+              ignore: /.*/
