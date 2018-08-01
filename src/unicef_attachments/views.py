@@ -1,6 +1,5 @@
 from urllib.parse import urljoin
 
-from django.conf import settings
 from django.db.models import Q
 from django.http import HttpResponseNotFound, HttpResponseRedirect
 from django.utils.translation import ugettext as _
