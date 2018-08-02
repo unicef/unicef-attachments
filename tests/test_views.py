@@ -1,7 +1,7 @@
 import pytest
 from django.urls import reverse
 from rest_framework import status
-from tests.factories import AttachmentFactory
+from tests.factories import AttachmentFactory, AttachmentFileTypeFactory
 
 from unicef_attachments.models import Attachment
 
@@ -200,3 +200,32 @@ def test_attachment_update_put_target(client, attachment_blank, upload_file, use
     assert attachment_update.file
     other_attachment_update = Attachment.objects.get(pk=attachment.pk)
     assert not other_attachment_update.file
+
+
+def test_attachment_single_file_field(client, author, user):
+    file_type = AttachmentFileTypeFactory(code="author_profile_image")
+    attachment = AttachmentFactory(
+        content_object=author,
+        file_type=file_type,
+        code=file_type.code,
+        file="test.pdf",
+    )
+    client.force_login(user)
+    response = client.get(reverse("sample:author-detail", args=[author.pk]))
+    assert response.status_code == status.HTTP_200_OK
+    data = response.json()
+    assert data["profile_image"].endswith(attachment.file.name)
+
+
+def test_attachment_single_file_field_no_value(client, author, user):
+    file_type = AttachmentFileTypeFactory(code="author_profile_image")
+    attachment = AttachmentFactory(
+        content_object=author,
+        file_type=file_type,
+        code=file_type.code,
+    )
+    client.force_login(user)
+    response = client.get(reverse("sample:author-detail", args=[author.pk]))
+    assert response.status_code == status.HTTP_200_OK
+    data = response.json()
+    assert data["profile_image"] is None

@@ -5,15 +5,11 @@ from django.utils.translation import ugettext as _
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 from unicef_restlib.fields import SeparatedReadWriteField
+from unicef_restlib.serializers import UserContextSerializerMixin
 
 from unicef_attachments.fields import AttachmentSingleFileField, Base64FileField
 from unicef_attachments.models import Attachment, FileType
 from unicef_attachments.utils import get_attachment_flat_model
-
-
-class UserContextSerializerMixin(object):
-    def get_user(self):
-        return self.context.get('user') or self.context.get('request').user
 
 
 class SimpleUserSerializer(serializers.ModelSerializer):
@@ -127,6 +123,8 @@ def validate_attachment(cls, data):
 
     try:
         attachment = Attachment.objects.get(pk=int(value))
+    except ValueError:
+        raise serializers.ValidationError("Attachment expects an integer")
     except Attachment.DoesNotExist:
         raise serializers.ValidationError("Attachment does not exist")
 

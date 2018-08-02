@@ -90,6 +90,13 @@ def attachment_blank(file_type, author):
 
 
 @pytest.fixture
+def attachment_empty():
+    return factories.AttachmentFactory(
+        file="blank.pdf"
+    )
+
+
+@pytest.fixture
 def attachment_link(file_type, author):
     return factories.AttachmentFactory(
         file_type=file_type,
