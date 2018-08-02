@@ -45,7 +45,7 @@ class Migration(migrations.Migration):
                 ('filename', models.CharField(blank=True, max_length=1024, verbose_name='File Name')),
                 ('uploaded_by', models.CharField(blank=True, max_length=255, verbose_name='Uploaded by')),
                 ('created', models.CharField(max_length=50, verbose_name='Created')),
-                ('attachment', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='denormalized', to='unicef_attachments.Attachment')),
+                ('attachment', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='unicef_attachments.Attachment')),
             ],
         ),
         migrations.CreateModel(

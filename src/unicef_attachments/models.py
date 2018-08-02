@@ -135,7 +135,6 @@ class Attachment(TimeStampedModel, models.Model):
 class AttachmentFlat(models.Model):
     attachment = models.ForeignKey(
         Attachment,
-        related_name="denormalized",
         on_delete=models.CASCADE,
     )
     object_link = models.URLField(blank=True, verbose_name=_("Object Link"))
