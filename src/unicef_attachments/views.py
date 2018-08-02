@@ -1,6 +1,5 @@
 from urllib.parse import urljoin
 
-from django.conf import settings
 from django.db.models import Q
 from django.http import HttpResponseNotFound, HttpResponseRedirect
 from django.utils.translation import ugettext as _
@@ -57,7 +56,11 @@ class AttachmentCreateView(CreateAPIView):
     def post(self, *args, **kwargs):
         super(AttachmentCreateView, self).post(*args, **kwargs)
         return Response(
-            AttachmentFlatSerializer(self.instance.denormalized.first()).data
+            AttachmentFlatSerializer(
+                get_attachment_flat_model().objects.filter(
+                    attachment=self.instance
+                ).first()
+            ).data
         )
 
 
@@ -76,11 +79,19 @@ class AttachmentUpdateView(UpdateAPIView):
     def put(self, *args, **kwargs):
         super(AttachmentUpdateView, self).put(*args, **kwargs)
         return Response(
-            AttachmentFlatSerializer(self.instance.denormalized.first()).data
+            AttachmentFlatSerializer(
+                get_attachment_flat_model().objects.filter(
+                    attachment=self.instance
+                ).first()
+            ).data
         )
 
     def patch(self, *args, **kwargs):
         super(AttachmentUpdateView, self).patch(*args, **kwargs)
         return Response(
-            AttachmentFlatSerializer(self.instance.denormalized.first()).data
+            AttachmentFlatSerializer(
+                get_attachment_flat_model().objects.filter(
+                    attachment=self.instance
+                ).first()
+            ).data
         )

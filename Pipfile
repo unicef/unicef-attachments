@@ -6,7 +6,6 @@ name = "pypi"
 [packages]
 djangorestframework = "*"
 django = "*"
-"psycopg2-binary" = "*"
 django-model-utils = "*"
 django-ordered-model = "*"
 unicef-restlib = ">=0.2.0"

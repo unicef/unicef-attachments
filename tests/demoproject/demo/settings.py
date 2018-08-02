@@ -38,8 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    'demo.sample',
     'unicef_attachments',
+    'demo.sample',
 ]
 
 MIDDLEWARE = [
@@ -78,10 +78,8 @@ WSGI_APPLICATION = 'demo.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'HOST': '127.0.0.1',
-        'NAME': 'unicef_attachments',
-        'USER': 'postgres',
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
 
@@ -125,5 +123,3 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 MEDIA_ROOT = '/tmp/'
-
-ATTACHMENT_DENORMALIZE_FUNC = "unicef_attachments.utils.denormalize"

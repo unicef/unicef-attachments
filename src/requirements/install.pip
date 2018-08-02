@@ -6,7 +6,6 @@ djangorestframework-csv
 djangorestframework-recursive
 djangorestframework
 drf-nested-routers
-psycopg2-binary
 pytz
 six
 unicef-djangolib

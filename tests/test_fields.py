@@ -1,7 +1,7 @@
 import base64
 
 import pytest
-from demo.sample.serializers import AuthorSerializer
+from demo.sample.serializers import AuthorFileTypeSerializer
 from rest_framework import serializers
 from tests.factories import AttachmentFactory, AttachmentFileTypeFactory
 
@@ -36,7 +36,7 @@ def test_base64_file_field_corrupted():
 
 def test_model_choice_file_field_valid_serializer():
     file_type = AttachmentFileTypeFactory(code="author_profile_image")
-    serializer = AuthorSerializer(data={
+    serializer = AuthorFileTypeSerializer(data={
         'file_type': file_type.pk,
         'first_name': 'Joe',
         'last_name': 'Soap',
@@ -46,7 +46,7 @@ def test_model_choice_file_field_valid_serializer():
 
 def test_model_choice_file_field_invalid_serializer():
     file_type = AttachmentFileTypeFactory(code="wrong")
-    serializer = AuthorSerializer(data={
+    serializer = AuthorFileTypeSerializer(data={
         'file_type': file_type.pk,
         'first_name': 'Joe',
         'last_name': 'Soap',
