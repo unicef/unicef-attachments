@@ -60,7 +60,6 @@ def test_base64_update_valid(file_type, attachment, base64_file):
 
 
 def test_attachment_serializer_invalid_not_integer(attachment_empty):
-    file_type = AttachmentFileTypeFactory(code="author_profile_image")
     assert not attachment_empty.code
     assert not attachment_empty.file_type
     serializer = AuthorSerializer(data={
@@ -75,7 +74,6 @@ def test_attachment_serializer_invalid_not_integer(attachment_empty):
 
 
 def test_attachment_serializer_invalid_attachment(attachment_empty):
-    file_type = AttachmentFileTypeFactory(code="author_profile_image")
     assert not attachment_empty.code
     assert not attachment_empty.file_type
     serializer = AuthorSerializer(data={

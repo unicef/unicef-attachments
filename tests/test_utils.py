@@ -1,4 +1,3 @@
-import pytest
 from demo.sample.models import AttachmentFlatOverride
 from demo.sample.utils import denormalize, filepath_prefix
 

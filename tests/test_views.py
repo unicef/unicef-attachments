@@ -219,7 +219,7 @@ def test_attachment_single_file_field(client, author, user):
 
 def test_attachment_single_file_field_no_value(client, author, user):
     file_type = AttachmentFileTypeFactory(code="author_profile_image")
-    attachment = AttachmentFactory(
+    AttachmentFactory(
         content_object=author,
         file_type=file_type,
         code=file_type.code,
