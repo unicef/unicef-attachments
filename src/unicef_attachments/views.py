@@ -1,16 +1,22 @@
 from urllib.parse import urljoin
 
+from django.contrib.contenttypes.models import ContentType
 from django.db.models import Q
 from django.http import HttpResponseNotFound, HttpResponseRedirect
 from django.utils.translation import ugettext as _
 from django.views.generic.detail import DetailView
+from rest_framework.exceptions import NotFound
 from rest_framework.generics import CreateAPIView, ListAPIView, UpdateAPIView
 from rest_framework.parsers import FileUploadParser
 from rest_framework.permissions import IsAdminUser
 from rest_framework.response import Response
 
-from unicef_attachments.models import Attachment
-from unicef_attachments.serializers import AttachmentFileUploadSerializer, AttachmentFlatSerializer
+from unicef_attachments.models import Attachment, AttachmentLink
+from unicef_attachments.serializers import (
+    AttachmentFileUploadSerializer,
+    AttachmentFlatSerializer,
+    AttachmentLinkSerializer,
+)
 from unicef_attachments.utils import get_attachment_flat_model
 
 
@@ -21,6 +27,24 @@ class AttachmentListView(ListAPIView):
     )
     permission_classes = (IsAdminUser, )
     serializer_class = AttachmentFlatSerializer
+
+
+class AttachmentLinkListView(ListAPIView):
+    permission_classes = (IsAdminUser, )
+    serializer_class = AttachmentLinkSerializer
+
+    def get_queryset(self):
+        try:
+            content_type = ContentType.objects.get_by_natural_key(
+                self.kwargs.get("app"),
+                self.kwargs.get("model"),
+            )
+        except ContentType.DoesNotExist:
+            raise NotFound()
+        return AttachmentLink.objects.filter(
+            content_type=content_type,
+            object_id=self.kwargs.get("object_pk")
+        )
 
 
 class AttachmentFileView(DetailView):

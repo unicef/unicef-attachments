@@ -15,6 +15,11 @@ urlpatterns = (
         name='file'
     ),
     url(
+        r'^links/(?P<app>[\w\.]+)/(?P<model>\w+)/(?P<object_pk>\d+)/$',
+        view=views.AttachmentLinkListView.as_view(),
+        name='link'
+    ),
+    url(
         r'^upload/$',
         view=views.AttachmentCreateView.as_view(),
         name='create'
