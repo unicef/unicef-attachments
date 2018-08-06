@@ -28,6 +28,13 @@ class AttachmentFactory(factory.django.DjangoModelFactory):
         model = models.Attachment
 
 
+class AttachmentLinkFactory(factory.django.DjangoModelFactory):
+    attachment = factory.SubFactory(AttachmentFactory)
+
+    class Meta:
+        model = models.AttachmentLink
+
+
 class AuthorFactory(factory.django.DjangoModelFactory):
     first_name = factory.Faker("first_name")
     last_name = factory.Faker("last_name")

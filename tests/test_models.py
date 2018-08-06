@@ -118,3 +118,7 @@ def test_attachment_flat_str(author):
     assert flat_qs.exists()
     flat = flat_qs.first()
     assert str(flat) == str(attachment.file)
+
+
+def test_attachment_list_str(attachment_link):
+    assert str(attachment_link) == "{} link".format(attachment_link.attachment)
