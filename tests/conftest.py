@@ -2,6 +2,7 @@ import base64
 import tempfile
 
 import pytest
+from django.contrib.contenttypes.models import ContentType
 from django.core.files.uploadedfile import SimpleUploadedFile
 from rest_framework.test import APIClient
 from tests import factories
@@ -97,10 +98,20 @@ def attachment_empty():
 
 
 @pytest.fixture
-def attachment_link(file_type, author):
+def attachment_uri(file_type, author):
     return factories.AttachmentFactory(
         file_type=file_type,
         code=file_type.code,
         content_object=author,
         hyperlink="https://example.com/sample.pdf",
+    )
+
+
+@pytest.fixture
+def attachment_link(attachment, book):
+    content_type = ContentType.objects.get_for_model(book)
+    return factories.AttachmentLinkFactory(
+        attachment=attachment,
+        content_type=content_type,
+        object_id=book.pk,
     )

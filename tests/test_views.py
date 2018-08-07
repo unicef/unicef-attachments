@@ -1,9 +1,10 @@
 import pytest
+from django.contrib.contenttypes.models import ContentType
 from django.urls import reverse
 from rest_framework import status
 from tests.factories import AttachmentFactory, AttachmentFileTypeFactory
 
-from unicef_attachments.models import Attachment
+from unicef_attachments.models import Attachment, AttachmentLink
 
 pytestmark = pytest.mark.django_db
 
@@ -30,14 +31,14 @@ def test_attachment_list_get_file(client, attachment, user):
     assert data[0]["id"] == attachment.pk
 
 
-def test_attachment_list_get_hyperlink(client, attachment_link, user):
+def test_attachment_list_get_hyperlink(client, attachment_uri, user):
     client.force_login(user)
-    assert attachment_link.hyperlink
+    assert attachment_uri.hyperlink
     response = client.get(reverse("attachments:list"))
     assert response.status_code == status.HTTP_200_OK
     data = response.json()
     assert len(data) == 1
-    assert data[0]["id"] == attachment_link.pk
+    assert data[0]["id"] == attachment_uri.pk
 
 
 def test_attachment_file_not_found(client, user):
@@ -229,3 +230,77 @@ def test_attachment_single_file_field_no_value(client, author, user):
     assert response.status_code == status.HTTP_200_OK
     data = response.json()
     assert data["profile_image"] is None
+
+
+def test_attachment_link_empty(client, book, user):
+    client.force_login(user)
+    content_type = ContentType.objects.get_for_model(book)
+    response = client.get(reverse("attachments:link", args=[
+        content_type.app_label,
+        content_type.model,
+        book.pk
+    ]))
+    assert response.status_code == status.HTTP_200_OK
+    assert response.json() == []
+
+
+def test_attachment_link_empty_no_found_content_type(client, book, user):
+    client.force_login(user)
+    response = client.get(reverse("attachments:link", args=[
+        "sample",
+        "wrong",
+        book.pk
+    ]))
+    assert response.status_code == status.HTTP_404_NOT_FOUND
+
+
+def test_attachment_link_list(client, book, attachment_link, user):
+    client.force_login(user)
+    content_type = ContentType.objects.get_for_model(book)
+    assert attachment_link.content_object == book
+    response = client.get(reverse("attachments:link", args=[
+        content_type.app_label,
+        content_type.model,
+        book.pk
+    ]))
+    assert response.status_code == status.HTTP_200_OK
+    data = response.json()
+    assert len(data) == 1
+    assert data[0]["id"] == attachment_link.pk
+    assert data[0]["filename"] == attachment_link.attachment.filename
+
+
+def test_attachment_link_add(client, attachment, book, user):
+    client.force_login(user)
+    content_type = ContentType.objects.get_for_model(book)
+    attachment_link_qs = AttachmentLink.objects.filter(
+        content_type=content_type,
+        object_id=book.pk,
+    )
+    assert not attachment_link_qs.exists()
+    response = client.post(
+        reverse("attachments:link", args=[
+            content_type.app_label,
+            content_type.model,
+            book.pk
+        ]),
+        data={"attachment": attachment.pk}
+    )
+    assert response.status_code == status.HTTP_201_CREATED
+    assert attachment_link_qs.exists()
+    data = response.json()
+    assert data["attachment"] == attachment.pk
+    assert data["filename"] == attachment.filename
+    attachment_link = attachment_link_qs.first()
+    assert attachment_link.content_object == book
+
+
+def test_attachment_link_delete(client, attachment_link, user):
+    client.force_login(user)
+    attachment_link_qs = AttachmentLink.objects.filter(pk=attachment_link.pk)
+    assert attachment_link_qs.exists()
+    response = client.delete(
+        reverse("attachments:link-delete", args=[attachment_link.pk]),
+    )
+    assert response.status_code == status.HTTP_204_NO_CONTENT
+    assert not attachment_link_qs.exists()

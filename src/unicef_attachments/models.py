@@ -132,6 +132,30 @@ class Attachment(TimeStampedModel, models.Model):
             denormalize_func(self)
 
 
+class AttachmentLink(models.Model):
+    attachment = models.ForeignKey(
+        Attachment,
+        related_name="links",
+        on_delete=models.CASCADE,
+    )
+    content_type = models.ForeignKey(
+        ContentType,
+        blank=True,
+        null=True,
+        verbose_name=_('Content Type'),
+        on_delete=models.CASCADE,
+    )
+    object_id = models.IntegerField(
+        blank=True,
+        null=True,
+        verbose_name=_('Object ID')
+    )
+    content_object = GenericForeignKey()
+
+    def __str__(self):
+        return "{} link".format(self.attachment)
+
+
 class AttachmentFlat(models.Model):
     attachment = models.ForeignKey(
         Attachment,

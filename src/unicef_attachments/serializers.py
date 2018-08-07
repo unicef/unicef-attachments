@@ -8,7 +8,7 @@ from unicef_restlib.fields import SeparatedReadWriteField
 from unicef_restlib.serializers import UserContextSerializerMixin
 
 from unicef_attachments.fields import AttachmentSingleFileField, Base64FileField
-from unicef_attachments.models import Attachment, FileType
+from unicef_attachments.models import Attachment, AttachmentLink, FileType
 from unicef_attachments.utils import get_attachment_flat_model
 
 
@@ -89,6 +89,34 @@ class AttachmentFlatSerializer(serializers.ModelSerializer):
     class Meta:
         model = get_attachment_flat_model()
         fields = "__all__"
+
+
+class AttachmentLinkSerializer(serializers.ModelSerializer):
+    filename = serializers.CharField(
+        source="attachment.filename",
+        read_only=True,
+    )
+    url = serializers.CharField(source="attachment.url", read_only=True)
+    file_type = serializers.CharField(
+        source="attachment.file_type.label",
+        read_only=True
+    )
+    created = serializers.DateTimeField(
+        source="attachment.created",
+        format="%d %b %Y",
+        read_only=True
+    )
+
+    class Meta:
+        model = AttachmentLink
+        fields = (
+            "id",
+            "attachment",
+            "filename",
+            "url",
+            "file_type",
+            "created",
+        )
 
 
 class AttachmentFileUploadSerializer(serializers.ModelSerializer):
