@@ -218,7 +218,7 @@ class AttachmentSerializerMixin(object):
                             "validate_{}".format(field_name),
                             types.MethodType(validate_attachment, self)
                         )
-                    self.attachment_list.append(field.source)
+                        self.attachment_list.append(field.source)
                 else:
                     setattr(field, "read_only", True)
 
