@@ -92,17 +92,31 @@ class AttachmentFlatSerializer(serializers.ModelSerializer):
 
 
 class AttachmentLinkSerializer(serializers.ModelSerializer):
-    filename = serializers.CharField(source="attachment.filename")
-    url = serializers.CharField(source="attachment.url")
-    file_type = serializers.CharField(source="attachment.file_type.label")
+    filename = serializers.CharField(
+        source="attachment.filename",
+        read_only=True,
+    )
+    url = serializers.CharField(source="attachment.url", read_only=True)
+    file_type = serializers.CharField(
+        source="attachment.file_type.label",
+        read_only=True
+    )
     created = serializers.DateTimeField(
         source="attachment.created",
-        format="%d %b %Y"
+        format="%d %b %Y",
+        read_only=True
     )
 
     class Meta:
         model = AttachmentLink
-        fields = "__all__"
+        fields = (
+            "id",
+            "attachment",
+            "filename",
+            "url",
+            "file_type",
+            "created",
+        )
 
 
 class AttachmentFileUploadSerializer(serializers.ModelSerializer):

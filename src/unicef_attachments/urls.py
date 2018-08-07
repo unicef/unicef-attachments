@@ -3,6 +3,7 @@ from django.conf.urls import url
 from unicef_attachments import views
 
 app_name = 'attachments'
+
 urlpatterns = (
     url(
         r'^$',
@@ -16,8 +17,13 @@ urlpatterns = (
     ),
     url(
         r'^links/(?P<app>[\w\.]+)/(?P<model>\w+)/(?P<object_pk>\d+)/$',
-        view=views.AttachmentLinkListView.as_view(),
+        view=views.AttachmentLinkListCreateView.as_view(),
         name='link'
+    ),
+    url(
+        r'^links/(?P<pk>\d+)/$',
+        view=views.AttachmentLinkDeleteView.as_view(),
+        name='link-delete'
     ),
     url(
         r'^upload/$',
