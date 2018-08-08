@@ -9,7 +9,6 @@ help:
 	@echo 'Usage:                                                                 '
 	@echo '   make clean                       remove the generated files         '
 	@echo '   make fullclean                   clean + remove tox, cache          '
-	@echo '   make coverage                    run coverage                       '
 	@echo '   make test                        run tests                          '
 	@echo '   make develop                     update develop environment         '
 	@echo '   make requirements                generate requirements files from Pipfile'
