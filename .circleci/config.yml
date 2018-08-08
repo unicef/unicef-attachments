@@ -4,6 +4,8 @@ jobs:
     working_directory: ~/code
     docker:
       - image: circleci/python:3.6
+        environment:
+          RELEASE_MATCH: "release/*"
     steps:
       - checkout
       - run:
@@ -12,16 +14,78 @@ jobs:
             export PATH=$PATH:/home/circleci/.local/bin
             pip install tox --user
             tox -r
-  package:
+      - deploy:
+          name: tag and release if release candidate
+          command: |
+              if [[ $CIRCLE_BRANCH == $RELEASE_MATCH ]]; then
+                curl --user ${CIRCLE_TOKEN}: \
+                  --fail \
+                  --data build_parameters[CIRCLE_JOB]=tag \
+                  --data revision=$CIRCLE_SHA1 \
+                  https://circleci.com/api/v1.1/project/github/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME/tree/$CIRCLE_BRANCH
+              else
+                echo "Skipped as '$CIRCLE_BRANCH' does not match '$RELEASE_MATCH' branch"
+              fi
+tagpackage:
     working_directory: ~/code
     docker:
       - image: circleci/python:3.6
+        environment:
+          API_URL: https://api.github.com/repos/unicef/unicef-attachments
     steps:
       - checkout
+      - add_ssh_keys:
+          fingerprints:
+            - "18:82:46:f1:cd:b6:3f:56:45:60:30:d5:d3:b4:d8:d1"
       - run:
-          name: verify git tag vs version
+          name: package and release
           command: |
-            python3 setup.py verify
+            export PATH=/home/circleci/.local/bin:$PATH
+            export TAG=${TAG:=${CIRCLE_BRANCH#*/}}
+            git status
+            git show-branch release/$TAG
+            if [ $? -eq 0 ];then
+              git reset --hard
+
+              git config user.email "ci@unicef.org"
+              git config user.name "CI"
+
+              git checkout master
+              git merge --no-ff release/$TAG -m "merge release/$TAG"
+              git tag -a -m "v$TAG" $TAG
+              git checkout develop
+              git merge --no-ff release/$TAG -m "merge release/$TAG"
+              git push origin --verbose --all
+              git push origin --verbose --tags
+              git push origin --verbose --delete release/$TAG
+            fi
+      - run:
+          name: release
+          command: |
+            export TAG=${TAG:=${CIRCLE_BRANCH#*/}}
+            export TODAY=`date '+%d %B %Y at %H:%M'`
+            function is_pre()
+            {
+                [[ "$(echo "$TAG" | sed 's/[0-9.]//g')" == "" ]] && echo false || echo true
+            }
+            function data() {
+            cat <<EOF
+            { "tag_name": "$TAG",
+              "name": "v$TAG",
+              "body": "version $TAG - Built on $TODAY",
+              "draft": false,
+              "prerelease": $(is_pre)
+            }
+            EOF
+            }
+            data=$(data)
+            curl -X POST -s \
+              --fail --verbose \
+              -H "Accept: application/json" \
+              -H "Content-Type:application/json" \
+              -H "Authorization: token ${GITHUB_TOKEN}" \
+              ${API_URL}/releases \
+              -d "$data"
       - run:
           name: init .pypirc
           command: |
@@ -36,20 +100,3 @@ jobs:
           name: create and upload package
           command: |
             python setup.py sdist upload
-
-workflows:
-  version: 2
-  build_and_package:
-    jobs:
-      - build:
-          filters:
-            tags:
-              only: /.*/
-      - package:
-          requires:
-            - build
-          filters:
-            tags:
-              only: /.*/
-            branches:
-              ignore: /.*/
