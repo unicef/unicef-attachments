@@ -26,7 +26,7 @@ jobs:
               else
                 echo "Skipped as '$CIRCLE_BRANCH' does not match '$RELEASE_MATCH' branch"
               fi
-tagpackage:
+  tag:
     working_directory: ~/code
     docker:
       - image: circleci/python:3.6
