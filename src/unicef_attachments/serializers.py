@@ -85,10 +85,16 @@ class Base64AttachmentSerializer(BaseAttachmentSerializer):
 
 class AttachmentFlatSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(source="attachment_id")
+    source = serializers.SerializerMethodField()
 
     class Meta:
         model = get_attachment_flat_model()
         fields = "__all__"
+
+    def get_source(self, obj):
+        if obj.attachment.content_type:
+            return obj.attachment.content_type.model_class().__name__
+        return ""
 
 
 class AttachmentLinkSerializer(serializers.ModelSerializer):
