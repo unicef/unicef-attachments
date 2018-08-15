@@ -59,13 +59,27 @@ def test_base64_update_valid(file_type, attachment, base64_file):
     )
 
 
-def test_attachment_serializer_invalid_not_integer(attachment_empty):
+def test_attachment_serializer_invalid_value_error(attachment_empty):
     assert not attachment_empty.code
     assert not attachment_empty.file_type
     serializer = AuthorSerializer(data={
         "first_name": "Joe",
         "last_name": "Soap",
         "profile_image": "wrong",
+    })
+    assert not serializer.is_valid()
+    assert serializer.errors == {
+        "profile_image": ["Attachment expects an integer"]
+    }
+
+
+def test_attachment_serializer_invalid_type_error(attachment_empty, upload_file):
+    assert not attachment_empty.code
+    assert not attachment_empty.file_type
+    serializer = AuthorSerializer(data={
+        "first_name": "Joe",
+        "last_name": "Soap",
+        "profile_image": upload_file,
     })
     assert not serializer.is_valid()
     assert serializer.errors == {
