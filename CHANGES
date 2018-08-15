@@ -1,0 +1,4 @@
+Release 0.2.4
+-------------
+
+* Handle `TypeError` gracefully in attachment validation (CH7200)
