@@ -63,37 +63,41 @@ def test_attachment_file_redirect(client, attachment, user):
     assert response.status_code == status.HTTP_302_FOUND
 
 
-def test_attachment_create_forbidden(client, upload_file):
+def test_attachment_create_forbidden(client, upload_file, headers):
     response = client.get(
         reverse("attachments:create"),
-        data={"file": upload_file}
+        data={"file": upload_file},
+        **headers
     )
     assert response.status_code == status.HTTP_403_FORBIDDEN
 
 
-def test_attachment_create_get(client, upload_file, user):
+def test_attachment_create_get(client, upload_file, user, headers):
     client.force_login(user)
     response = client.get(
         reverse("attachments:create"),
-        data={"file": upload_file}
+        data={"file": upload_file},
+        **headers
     )
     assert response.status_code == status.HTTP_405_METHOD_NOT_ALLOWED
 
 
-def test_attachment_create_put(client, upload_file, user):
+def test_attachment_create_put(client, upload_file, user, headers):
     client.force_login(user)
     response = client.put(
         reverse("attachments:create"),
-        data={"file": upload_file}
+        data={"file": upload_file},
+        **headers
     )
     assert response.status_code == status.HTTP_405_METHOD_NOT_ALLOWED
 
 
-def test_attachment_create_patch(client, upload_file, user):
+def test_attachment_create_patch(client, upload_file, user, headers):
     client.force_login(user)
     response = client.patch(
         reverse("attachments:create"),
-        data={"file": upload_file}
+        data={"file": upload_file},
+        **headers
     )
     assert response.status_code == status.HTTP_405_METHOD_NOT_ALLOWED
 
@@ -116,36 +120,39 @@ def test_attachment_create_post(client, upload_file, user, headers):
     assert attachment.file_type is None
 
 
-def test_attachment_update_forbidden(client, attachment, upload_file):
+def test_attachment_update_forbidden(client, attachment, upload_file, headers):
     response = client.get(
         reverse("attachments:update", args=[attachment.pk]),
-        data={"file": upload_file}
+        data={"file": upload_file},
+        **headers
     )
     assert response.status_code == status.HTTP_403_FORBIDDEN
 
 
-def test_attachment_update_get(client, attachment, upload_file, user):
+def test_attachment_update_get(client, attachment, upload_file, user, headers):
     client.force_login(user)
     response = client.get(
         reverse("attachments:update", args=[attachment.pk]),
-        data={"file": upload_file}
+        data={"file": upload_file},
+        **headers
     )
     assert response.status_code == status.HTTP_405_METHOD_NOT_ALLOWED
 
 
-def test_attachment_update_post(client, attachment, upload_file, user):
+def test_attachment_update_post(client, attachment, upload_file, user, headers):
     client.force_login(user)
     response = client.get(
         reverse("attachments:update", args=[attachment.pk]),
-        data={"file": upload_file}
+        data={"file": upload_file},
+        **headers
     )
     assert response.status_code == status.HTTP_405_METHOD_NOT_ALLOWED
 
 
-def test_attachment_update_put(client, attachment_blank, upload_file, user, headers):
-    client.force_login(user)
+def test_attachment_update_put(api_client, attachment_blank, upload_file, user, headers):
+    api_client.force_login(user)
     assert not attachment_blank.file
-    response = client.put(
+    response = api_client.put(
         reverse("attachments:update", args=[attachment_blank.pk]),
         data={"file": upload_file},
         **headers
@@ -161,10 +168,10 @@ def test_attachment_update_put(client, attachment_blank, upload_file, user, head
     assert attachment_update.file
 
 
-def test_attachment_update_patch(client, attachment_blank, upload_file, user, headers):
-    client.force_login(user)
+def test_attachment_update_patch(api_client, attachment_blank, upload_file, user, headers):
+    api_client.force_login(user)
     assert not attachment_blank.file
-    response = client.patch(
+    response = api_client.patch(
         reverse("attachments:update", args=[attachment_blank.pk]),
         data={"file": upload_file},
         **headers
@@ -179,16 +186,16 @@ def test_attachment_update_patch(client, attachment_blank, upload_file, user, he
     )
 
 
-def test_attachment_update_put_target(client, attachment_blank, upload_file, user, headers):
-    client.force_login(user)
+def test_attachment_update_put_target(api_client, attachment_blank, upload_file, user, headers):
+    api_client.force_login(user)
     """Ensure update only affects specified attachment"""
     attachment = AttachmentFactory()
     assert not attachment_blank.file
     assert not attachment.file
-    response = client.put(
+    response = api_client.put(
         reverse("attachments:update", args=[attachment_blank.pk]),
         data={"file": upload_file},
-        **headers
+        format="multipart"
     )
     assert response.status_code == status.HTTP_200_OK
     data = response.json()
