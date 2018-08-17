@@ -1,3 +1,11 @@
+Release 0.2.5
+-------------
+
+* Remove 'source' value from flat serializer
+* Update parsers for attachment upload views
+* Add more tests
+* Add check that test coverage grater than 95%
+
 Release 0.2.4
 -------------
 

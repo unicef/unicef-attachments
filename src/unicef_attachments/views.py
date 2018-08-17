@@ -7,7 +7,7 @@ from django.utils.translation import ugettext as _
 from django.views.generic.detail import DetailView
 from rest_framework.exceptions import NotFound
 from rest_framework.generics import CreateAPIView, DestroyAPIView, ListAPIView, ListCreateAPIView, UpdateAPIView
-from rest_framework.parsers import FileUploadParser
+from rest_framework.parsers import FormParser, MultiPartParser
 from rest_framework.permissions import IsAdminUser
 from rest_framework.response import Response
 
@@ -98,7 +98,7 @@ class AttachmentCreateView(CreateAPIView):
     queryset = Attachment.objects.all()
     permission_classes = (IsAdminUser,)
     serializer_class = AttachmentFileUploadSerializer
-    parser_classes = (FileUploadParser,)
+    parser_classes = (FormParser, MultiPartParser,)
 
     def perform_create(self, serializer):
         self.instance = serializer.save()
@@ -118,7 +118,7 @@ class AttachmentUpdateView(UpdateAPIView):
     queryset = Attachment.objects.all()
     permission_classes = (IsAdminUser,)
     serializer_class = AttachmentFileUploadSerializer
-    parser_classes = (FileUploadParser,)
+    parser_classes = (FormParser, MultiPartParser,)
 
     def perform_update(self, serializer):
         # force the updating of the uploaded by field to current user
