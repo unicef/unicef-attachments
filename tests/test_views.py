@@ -29,6 +29,7 @@ def test_attachment_list_get_file(client, attachment, user):
     data = response.json()
     assert len(data) == 1
     assert data[0]["id"] == attachment.pk
+    assert data[0]["file_type_id"] == attachment.file_type.pk
 
 
 def test_attachment_list_get_hyperlink(client, attachment_uri, user):
