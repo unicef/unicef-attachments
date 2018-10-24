@@ -1,3 +1,9 @@
+Release 0.4.0
+-------------
+
+* Add file_type_id to attachment list result set
+* Able to filter on attachment list
+
 Release 0.3.0
 -------------
 
