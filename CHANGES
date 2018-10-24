@@ -1,3 +1,8 @@
+Release 0.4.1
+-------------
+
+* Fix issue with file_type_id not showing up in attachment list result set
+
 Release 0.4.0
 -------------
 
