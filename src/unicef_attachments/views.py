@@ -5,6 +5,7 @@ from django.db.models import Q
 from django.http import HttpResponseNotFound, HttpResponseRedirect
 from django.utils.translation import ugettext as _
 from django.views.generic.detail import DetailView
+from drf_querystringfilter.backend import QueryStringFilterBackend
 from rest_framework.exceptions import NotFound
 from rest_framework.generics import CreateAPIView, DestroyAPIView, ListAPIView, ListCreateAPIView, UpdateAPIView
 from rest_framework.parsers import FormParser, MultiPartParser
@@ -27,6 +28,8 @@ class AttachmentListView(ListAPIView):
     )
     permission_classes = (IsAdminUser, )
     serializer_class = AttachmentFlatSerializer
+    filter_backends = (QueryStringFilterBackend,)
+    filter_fields = [f for f in AttachmentFlatSerializer().fields]
 
 
 class AttachmentLinkListCreateView(ListCreateAPIView):

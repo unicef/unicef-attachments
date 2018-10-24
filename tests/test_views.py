@@ -41,6 +41,28 @@ def test_attachment_list_get_hyperlink(client, attachment_uri, user):
     assert data[0]["id"] == attachment_uri.pk
 
 
+def test_attachment_list_filter(client, attachment, user):
+    client.force_login(user)
+    response = client.get("{}?filename={}".format(
+        reverse("attachments:list"),
+        attachment.filename
+    ))
+    assert response.status_code == status.HTTP_200_OK
+    data = response.json()
+    assert len(data) == 1
+    assert data[0]["id"] == attachment.pk
+
+
+def test_attachment_list_filter_not_found(client, attachment, user):
+    client.force_login(user)
+    response = client.get("{}?filename=wrong".format(
+        reverse("attachments:list"),
+    ))
+    assert response.status_code == status.HTTP_200_OK
+    data = response.json()
+    assert len(data) == 0
+
+
 def test_attachment_file_not_found(client, user):
     client.force_login(user)
     response = client.get(reverse("attachments:file", args=[404]))

@@ -6,6 +6,7 @@ djangorestframework-csv
 djangorestframework-recursive
 djangorestframework
 drf-nested-routers
+drf-querystringfilter
 pytz
 six
 unicef-djangolib
