@@ -1,3 +1,8 @@
+Release 0.4.2
+-------------
+
+* Handle None values in str format in initial data for attachment fields
+
 Release 0.4.1
 -------------
 
