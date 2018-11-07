@@ -214,7 +214,7 @@ class AttachmentSerializerMixin(object):
                         if field.override in self.fields:
                             self.fields[field.override].read_only = True
                     # ignore values that are None
-                    if self.initial_data[field_name] is None:
+                    if self.initial_data[field_name] is None or self.initial_data[field_name] == 'None':
                         self.initial_data.pop(field_name)
                     else:
                         setattr(
