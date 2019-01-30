@@ -1,3 +1,5 @@
+from unittest.mock import Mock, patch
+
 import pytest
 from django.contrib.contenttypes.models import ContentType
 from django.urls import reverse
@@ -123,6 +125,32 @@ def test_attachment_create_patch(client, upload_file, user, headers):
         **headers
     )
     assert response.status_code == status.HTTP_405_METHOD_NOT_ALLOWED
+
+
+def test_attachment_create_post_invalid_type(
+        client,
+        upload_file,
+        user,
+        headers,
+):
+    client.force_login(user)
+    attachment_qs = Attachment.objects
+    assert not attachment_qs.exists()
+    mock_magic = Mock()
+    mock_magic.from_buffer.return_value = "text/x-python"
+    with patch(
+            "unicef_attachments.validators.magic.Magic",
+            Mock(return_value=mock_magic),
+    ):
+        response = client.post(
+            reverse("attachments:create"),
+            data={"file": upload_file},
+            **headers
+        )
+    assert response.status_code == status.HTTP_400_BAD_REQUEST
+    assert response.json() == {"file": [
+        "Unsupported file type: text/x-python."
+    ]}
 
 
 def test_attachment_create_post(client, upload_file, user, headers):
