@@ -7,6 +7,8 @@ from django.utils.translation import ugettext_lazy as _
 from rest_framework import serializers
 from unicef_restlib.fields import ModelChoiceField
 
+from unicef_attachments.validators import SafeFileValidator
+
 
 class FileTypeModelChoiceField(ModelChoiceField):
     def get_choice(self, obj):
@@ -31,11 +33,16 @@ class Base64FileField(serializers.FileField):
 
 class AttachmentSingleFileField(serializers.Field):
     override = None
+    default_error_messages = {
+        'invalid': _('Invalid file type.')
+    }
 
     def __init__(self, *args, **kwargs):
         if "override" in kwargs:
             self.override = kwargs.pop("override")
         super(AttachmentSingleFileField, self).__init__(*args, **kwargs)
+        validator = SafeFileValidator(message=self.error_messages["invalid"])
+        self.validators.append(validator)
 
     def get_attachment(self, instance):
         if hasattr(instance, self.source):
