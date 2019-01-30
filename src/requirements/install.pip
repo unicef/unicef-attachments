@@ -2,11 +2,11 @@ django-fsm
 django-model-utils
 django-ordered-model
 django
-djangorestframework-csv
 djangorestframework-recursive
 djangorestframework
 drf-nested-routers
 drf-querystringfilter
+python-magic
 pytz
 six
 unicef-djangolib

@@ -1,6 +1,7 @@
 atomicwrites
 attrs
 coverage
+entrypoints
 factory-boy
 faker
 flake8
