@@ -7,8 +7,6 @@ from django.utils.translation import ugettext_lazy as _
 from rest_framework import serializers
 from unicef_restlib.fields import ModelChoiceField
 
-from unicef_attachments.validators import SafeFileValidator
-
 
 class FileTypeModelChoiceField(ModelChoiceField):
     def get_choice(self, obj):
