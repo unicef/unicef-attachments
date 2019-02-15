@@ -24,6 +24,7 @@ def superuser():
         username="superusername",
         email="super@example.com",
         is_superuser=True,
+        is_staff=True,
     )
 
 
