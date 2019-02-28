@@ -1,12 +1,11 @@
 from django.contrib import admin
 from django.contrib.contenttypes import admin as ct_admin
-from ordered_model.admin import OrderedModelAdmin
 
 from unicef_attachments import models as app_models
 
 
 @admin.register(app_models.FileType)
-class FileTypeAdmin(OrderedModelAdmin):
+class FileTypeAdmin(admin.ModelAdmin):
     list_display = ['label', 'name', 'code', 'move_up_down_links']
     list_filter = ['code', ]
     search_fields = ['name', 'label']
