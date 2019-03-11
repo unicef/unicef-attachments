@@ -1,5 +1,6 @@
 django-fsm
 django-model-utils
+django-ordered-model
 django
 djangorestframework-recursive
 djangorestframework
