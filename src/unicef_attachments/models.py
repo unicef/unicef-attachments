@@ -10,6 +10,7 @@ from django.urls import reverse
 from django.utils.text import slugify
 from django.utils.translation import ugettext as _
 from model_utils.models import TimeStampedModel
+from ordered_model.models import OrderedModel
 
 from unicef_attachments.utils import filepath_prefix, get_denormalize_func
 
@@ -38,7 +39,7 @@ def generate_file_path(attachment, filename):
     return '/'.join(file_path)
 
 
-class FileType(models.Model):
+class FileType(OrderedModel, models.Model):
     name = models.CharField(max_length=64, verbose_name=_('Name'))
     label = models.CharField(max_length=64, verbose_name=_('Label'))
     code = models.CharField(max_length=64, default="", verbose_name=_('Code'))
@@ -48,7 +49,7 @@ class FileType(models.Model):
 
     class Meta:
         unique_together = ("name", "code", )
-        ordering = ('code',)
+        ordering = ('code', 'order')
 
 
 class Attachment(TimeStampedModel, models.Model):
