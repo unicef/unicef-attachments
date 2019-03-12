@@ -1,3 +1,7 @@
+Release 0.5.1
+-------------
+* Better handling of attachments in admin views
+
 Release 0.5.0
 -------------
 * Add SafeFileValidator
