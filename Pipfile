@@ -7,10 +7,10 @@ name = "pypi"
 djangorestframework = "*"
 django = "*"
 django-model-utils = "*"
-django-ordered-model = "*"
 unicef-restlib = ">=0.2.0"
 drf-querystringfilter = "*"
 python-magic = "*"
+django-ordered-model = "*"
 
 [dev-packages]
 "flake8" = "*"
