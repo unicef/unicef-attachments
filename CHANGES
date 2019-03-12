@@ -1,11 +1,5 @@
-Release 0.5.2
--------------
-* Restore ordering of FileType model
-
-
 Release 0.5.1
 -------------
-* Remove ordering of FileType model
 * Better handling of attachments in admin views
 
 Release 0.5.0
