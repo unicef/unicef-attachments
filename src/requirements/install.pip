@@ -9,6 +9,7 @@ drf-querystringfilter
 python-magic
 pytz
 six
+sqlparse
 unicef-djangolib
 unicef-restlib
 unicodecsv
