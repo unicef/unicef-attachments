@@ -150,7 +150,7 @@ def validate_attachment(cls, data):
     so we set the data here, and leave it to be saved later.
 
     Backward compatibility:
-    If we are provided with a valid then we expect it to be valid
+    If we are provided with a value then we expect it to be valid
     If no value provided, then we assume still working the old way
     """
     value, code = data
