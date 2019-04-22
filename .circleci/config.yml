@@ -1,31 +1,92 @@
 version: 2
+py36: &py36
+  working_directory: ~/code
+  docker:
+    - image: circleci/python:3.6
+      environment:
+        RELEASE_MATCH: "release/*"
+
+py37: &py37
+  working_directory: ~/code
+  docker:
+    - image: circleci/python:3.7
+      environment:
+        RELEASE_MATCH: "release/*"
+
 jobs:
-  build:
-    working_directory: ~/code
-    docker:
-      - image: circleci/python:3.6
-        environment:
-          RELEASE_MATCH: "release/*"
+  lint:
+    <<: *py36
+    steps:
+      - checkout
+      - run:
+          name: lint checks
+          command: |
+            export PATH=$PATH:/home/circleci/.local/bin
+            pip install -r src/requirements/install.pip --user
+            pip install -r src/requirements/testing.pip --user
+            flake8 src/
+            isort -rc src/ --check-only
+
+  test-py36-d20:
+    <<: *py36
     steps:
       - checkout
       - run:
           name: run tests
           command: |
-            export PATH=$PATH:/home/circleci/.local/bin
-            pip install tox --user
-            tox -r
-      - deploy:
-          name: tag and release if release candidate
+            pip install "django>=2.0,<2.1" --user
+            ./test.sh
+
+  test-py36-d21:
+    <<: *py36
+    steps:
+      - checkout
+      - run:
+          name: run tests
           command: |
-              if [[ $CIRCLE_BRANCH == $RELEASE_MATCH ]]; then
-                curl --user ${CIRCLE_TOKEN}: \
-                  --fail \
-                  --data build_parameters[CIRCLE_JOB]=tag \
-                  --data revision=$CIRCLE_SHA1 \
-                  https://circleci.com/api/v1.1/project/github/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME/tree/$CIRCLE_BRANCH
-              else
-                echo "Skipped as '$CIRCLE_BRANCH' does not match '$RELEASE_MATCH' branch"
-              fi
+            pip install "django>=2.1,<2.2" --user
+            ./test.sh
+
+  test-py36-d22:
+    <<: *py36
+    steps:
+      - checkout
+      - run:
+          name: run tests
+          command: |
+            pip install "django>=2.2,<2.3" --user
+            ./test.sh
+
+  test-py37-d20:
+    <<: *py37
+    steps:
+      - checkout
+      - run:
+          name: run tests
+          command: |
+            pip install "django>=2.0,<2.1" --user
+            ./test.sh
+
+  test-py37-d21:
+    <<: *py37
+    steps:
+      - checkout
+      - run:
+          name: run tests
+          command: |
+            pip install "django>=2.1,<2.2" --user
+            ./test.sh
+
+  test-py37-d22:
+    <<: *py37
+    steps:
+      - checkout
+      - run:
+          name: run tests
+          command: |
+            pip install "django>=2.2,<2.3" --user
+            ./test.sh
+
   tag:
     working_directory: ~/code
     docker:
@@ -100,3 +161,40 @@ jobs:
           name: create and upload package
           command: |
             python setup.py sdist upload
+
+workflows:
+  version: 2
+  build_and_test:
+    jobs:
+      - lint
+      - test-py36-d20:
+          requires:
+            - lint
+      - test-py36-d21:
+          requires:
+            - lint
+      - test-py36-d22:
+          requires:
+            - lint
+      - test-py37-d20:
+          requires:
+            - lint
+      - test-py37-d21:
+          requires:
+            - lint
+      - test-py37-d22:
+          requires:
+            - lint
+      - tag:
+          requires:
+            - test-py36-d20
+            - test-py36-d21
+            - test-py36-d22
+            - test-py37-d20
+            - test-py37-d21
+            - test-py37-d22
+          filters:
+            tags:
+              only: /.*/
+            branches:
+              ignore: /.*/
