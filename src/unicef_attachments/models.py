@@ -102,7 +102,7 @@ class Attachment(TimeStampedModel, models.Model):
         return str(self.file)
 
     def clean(self):
-        super(Attachment, self).clean()
+        super().clean()
         if bool(self.file) == bool(self.hyperlink):
             raise ValidationError(_('Please provide file or hyperlink.'))
 
@@ -124,7 +124,7 @@ class Attachment(TimeStampedModel, models.Model):
         return reverse("attachments:file", args=[self.pk])
 
     def save(self, *args, **kwargs):
-        super(Attachment, self).save(*args, **kwargs)
+        super().save(*args, **kwargs)
 
         # check if we want to denormalize attachment data
         denormalize_func = get_denormalize_func()

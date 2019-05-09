@@ -43,11 +43,11 @@ class BaseAttachmentSerializer(UserContextSerializerMixin, serializers.ModelSeri
 
     def create(self, validated_data):
         self._validate_attachment(validated_data)
-        return super(BaseAttachmentSerializer, self).create(validated_data)
+        return super().create(validated_data)
 
     def update(self, instance, validated_data):
         self._validate_attachment(validated_data, instance=instance)
-        return super(BaseAttachmentSerializer, self).update(instance, validated_data)
+        return super().update(instance, validated_data)
 
     class Meta:
         model = Attachment
@@ -74,7 +74,7 @@ class Base64AttachmentSerializer(BaseAttachmentSerializer):
     file_name = serializers.CharField(write_only=True, required=False)
 
     def validate(self, attrs):
-        data = super(Base64AttachmentSerializer, self).validate(attrs)
+        data = super().validate(attrs)
         file_name = data.pop('file_name', None)
         if 'file' in data and file_name:
             data['file'].name = file_name
@@ -180,9 +180,9 @@ def validate_attachment(cls, data):
     return attachment
 
 
-class AttachmentSerializerMixin(object):
+class AttachmentSerializerMixin:
     def __init__(self, *args, **kwargs):
-        super(AttachmentSerializerMixin, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.attachment_list = []
         self.check_attachment_fields()
 
@@ -240,7 +240,7 @@ class AttachmentSerializerMixin(object):
             attachments_to_save.append(
                 self.validated_data.pop(attachment_attr)
             )
-        response = super(AttachmentSerializerMixin, self).save(*args, **kwargs)
+        response = super().save(*args, **kwargs)
         for attachment in attachments_to_save:
             if attachment.content_object is None:
                 attachment.content_object = self.instance
