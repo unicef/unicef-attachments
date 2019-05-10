@@ -8,4 +8,5 @@ coverage.xml
 .pytest_cache/
 .tox/
 .idea/
+Pipfile
 Pipfile.lock

@@ -107,7 +107,7 @@ class AttachmentCreateView(CreateAPIView):
         self.instance = serializer.save()
 
     def post(self, *args, **kwargs):
-        super(AttachmentCreateView, self).post(*args, **kwargs)
+        super().post(*args, **kwargs)
         return Response(
             AttachmentFlatSerializer(
                 get_attachment_flat_model().objects.filter(
@@ -130,7 +130,7 @@ class AttachmentUpdateView(UpdateAPIView):
         self.instance = serializer.save()
 
     def put(self, *args, **kwargs):
-        super(AttachmentUpdateView, self).put(*args, **kwargs)
+        super().put(*args, **kwargs)
         return Response(
             AttachmentFlatSerializer(
                 get_attachment_flat_model().objects.filter(
@@ -140,7 +140,7 @@ class AttachmentUpdateView(UpdateAPIView):
         )
 
     def patch(self, *args, **kwargs):
-        super(AttachmentUpdateView, self).patch(*args, **kwargs)
+        super().patch(*args, **kwargs)
         return Response(
             AttachmentFlatSerializer(
                 get_attachment_flat_model().objects.filter(
