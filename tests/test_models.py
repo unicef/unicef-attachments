@@ -127,14 +127,17 @@ def test_attachment_list_str(attachment_link):
 def test_file_type_group_by():
     file_type_1 = AttachmentFileTypeFactory(
         label='ft1',
+        code="a",
         group=["group1", "group2"],
     )
     file_type_2 = AttachmentFileTypeFactory(
         label='ft2',
+        code="b",
         group=["group1"],
     )
     file_type_3 = AttachmentFileTypeFactory(
         label='ft3',
+        code="c",
         group=["group3"],
     )
     assert list(models.FileType.objects.group_by("group1")) == [
