@@ -122,3 +122,26 @@ def test_attachment_flat_str(author):
 
 def test_attachment_list_str(attachment_link):
     assert str(attachment_link) == "{} link".format(attachment_link.attachment)
+
+
+def test_file_type_group_by():
+    file_type_1 = AttachmentFileTypeFactory(
+        label='ft1',
+        group=["group1", "group2"],
+    )
+    file_type_2 = AttachmentFileTypeFactory(
+        label='ft2',
+        group=["group1"],
+    )
+    file_type_3 = AttachmentFileTypeFactory(
+        label='ft3',
+        group=["group3"],
+    )
+    assert list(models.FileType.objects.group_by("group1")) == [
+        file_type_1,
+        file_type_2,
+    ]
+    assert list(models.FileType.objects.group_by(["group1", "group2"])) == [
+        file_type_1,
+    ]
+    assert list(models.FileType.objects.group_by("group3")) == [file_type_3]

@@ -4,6 +4,7 @@ from urllib.parse import urlsplit
 from django.conf import settings
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
+from django.contrib.postgres.fields import ArrayField
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.urls import reverse
@@ -39,10 +40,28 @@ def generate_file_path(attachment, filename):
     return '/'.join(file_path)
 
 
+class FileTypeQueryset(models.QuerySet):
+    def group_by(self, group):
+        if not isinstance(group, list):
+            group = [group]
+        return self.filter(group__contains=group)
+
+
+class FileTypeManager(models.Manager):
+    def get_queryset(self):
+        return FileTypeQueryset(self.model, using=self._db)
+
+    def group_by(self, group):
+        return self.get_queryset().group_by(group)
+
+
 class FileType(OrderedModel, models.Model):
     name = models.CharField(max_length=64, verbose_name=_('Name'))
     label = models.CharField(max_length=64, verbose_name=_('Label'))
     code = models.CharField(max_length=64, default="", verbose_name=_('Code'))
+    group = ArrayField(models.CharField(max_length=64, blank=True), null=True)
+
+    objects = FileTypeManager()
 
     def __str__(self):
         return self.label
