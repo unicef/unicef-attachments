@@ -4,8 +4,8 @@ import pytest
 from django.contrib.contenttypes.models import ContentType
 from django.urls import reverse
 from rest_framework import status
-from tests.factories import AttachmentFactory, AttachmentFileTypeFactory
 
+from tests.factories import AttachmentFactory, AttachmentFileTypeFactory
 from unicef_attachments.models import Attachment, AttachmentLink
 
 pytestmark = pytest.mark.django_db

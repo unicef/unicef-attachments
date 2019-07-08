@@ -1,8 +1,8 @@
 import pytest
 from django.core.exceptions import ValidationError
 from django.core.files.uploadedfile import SimpleUploadedFile
-from tests.factories import AttachmentFactory, AttachmentFileTypeFactory
 
+from tests.factories import AttachmentFactory, AttachmentFileTypeFactory
 from unicef_attachments import models
 
 pytestmark = pytest.mark.django_db

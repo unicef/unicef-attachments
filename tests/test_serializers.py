@@ -3,8 +3,8 @@ import os
 import pytest
 from demo.sample.serializers import AuthorOverrideSerializer, AuthorSerializer
 from rest_framework.exceptions import ValidationError
-from tests.factories import AttachmentFactory, AttachmentFileTypeFactory, UserFactory
 
+from tests.factories import AttachmentFactory, AttachmentFileTypeFactory, UserFactory
 from unicef_attachments.models import Attachment
 from unicef_attachments.serializers import Base64AttachmentSerializer
 
