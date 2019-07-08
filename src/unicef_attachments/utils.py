@@ -135,7 +135,7 @@ def cleanup_filetypes():
             for pk, group in dups:
                 if not primary_file_type.group:
                     primary_file_type.group = []
-                primary_file_type.group = primary_file_type.group.append(group)
+                primary_file_type.group += group
                 primary_file_type.save()
                 Attachment.objects.filter(file_type__pk=pk).update(
                     file_type=primary_file_type,

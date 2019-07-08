@@ -78,14 +78,17 @@ def test_cleanup_file_types():
     file_type_2 = AttachmentFileTypeFactory(
         label="Other",
         name="different",
+        group=["ft2"],
     )
     file_type_3 = AttachmentFileTypeFactory(
         label="PD",
         name="pd",
+        group=["ft3"],
     )
     file_type_4 = AttachmentFileTypeFactory(
         label="FT4",
         name="something",
+        group=["ft4"],
     )
     attachment_1 = AttachmentFactory(file_type=file_type_1)
     attachment_2 = AttachmentFactory(file_type=file_type_2)
@@ -105,3 +108,6 @@ def test_cleanup_file_types():
 
     assert not FileType.objects.filter(pk=file_type_2.pk).exists()
     assert not FileType.objects.filter(pk=file_type_4.pk).exists()
+
+    file_type_1.refresh_from_db()
+    assert file_type_1.group == ["ft2", "ft4"]
