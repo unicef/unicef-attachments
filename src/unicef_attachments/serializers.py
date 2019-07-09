@@ -8,7 +8,7 @@ from unicef_restlib.fields import SeparatedReadWriteField
 from unicef_restlib.serializers import UserContextSerializerMixin
 
 from unicef_attachments.fields import AttachmentSingleFileField, Base64FileField
-from unicef_attachments.models import Attachment, AttachmentLink
+from unicef_attachments.models import Attachment, AttachmentLink, FileType
 from unicef_attachments.utils import get_attachment_flat_model
 from unicef_attachments.validators import SafeFileValidator
 
@@ -174,6 +174,10 @@ def validate_attachment(cls, data):
             )
 
     attachment.code = code
+    try:
+        attachment.file_type = FileType.objects.get(code=code)
+    except (FileType.DoesNotExist, FileType.MultipleObjectsReturned):
+        pass
 
     return attachment
 

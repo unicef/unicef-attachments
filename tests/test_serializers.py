@@ -118,7 +118,9 @@ def test_attachment_serializer_invalid_associated(attachment):
 
 
 def test_attachment_serializer_save(attachment_empty):
+    file_type = AttachmentFileTypeFactory(code="author_profile_image")
     assert not attachment_empty.code
+    assert not attachment_empty.file_type
     serializer = AuthorSerializer(data={
         "first_name": "Joe",
         "last_name": "Soap",
@@ -129,6 +131,7 @@ def test_attachment_serializer_save(attachment_empty):
 
     attachment = Attachment.objects.get(pk=attachment_empty.pk)
     assert attachment.code
+    assert attachment.file_type == file_type
 
 
 def test_attachment_serializer_update(author):
