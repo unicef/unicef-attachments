@@ -11,7 +11,7 @@ from django.urls import reverse
 from django.utils.text import slugify
 from django.utils.translation import ugettext as _
 from model_utils.models import TimeStampedModel
-from ordered_model.models import OrderedModel
+from ordered_model.models import OrderedModel, OrderedModelManager, OrderedModelQuerySet
 
 from unicef_attachments.utils import filepath_prefix, get_denormalize_func
 
@@ -40,14 +40,14 @@ def generate_file_path(attachment, filename):
     return '/'.join(file_path)
 
 
-class FileTypeQueryset(models.QuerySet):
+class FileTypeQueryset(OrderedModelQuerySet):
     def group_by(self, group):
         if not isinstance(group, list):
             group = [group]
         return self.filter(group__contains=group)
 
 
-class FileTypeManager(models.Manager):
+class FileTypeManager(OrderedModelManager):
     def get_queryset(self):
         return FileTypeQueryset(self.model, using=self._db)
 
