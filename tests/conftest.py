@@ -5,6 +5,7 @@ import pytest
 from django.contrib.contenttypes.models import ContentType
 from django.core.files.uploadedfile import SimpleUploadedFile
 from rest_framework.test import APIClient
+
 from tests import factories
 
 

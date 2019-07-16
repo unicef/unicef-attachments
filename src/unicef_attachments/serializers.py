@@ -162,7 +162,6 @@ def validate_attachment(cls, data):
     except Attachment.DoesNotExist:
         raise serializers.ValidationError("Attachment does not exist")
 
-    file_type, _ = FileType.objects.get_or_create(code=code)
     if attachment.content_object is not None:
         if not cls.instance or attachment.content_object != cls.instance:
             # If content object exists, expect instance to exist
@@ -174,8 +173,11 @@ def validate_attachment(cls, data):
                 )
             )
 
-    attachment.file_type = file_type
     attachment.code = code
+    try:
+        attachment.file_type = FileType.objects.get(code=code)
+    except (FileType.DoesNotExist, FileType.MultipleObjectsReturned):
+        pass
 
     return attachment
 

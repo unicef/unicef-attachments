@@ -1,3 +1,5 @@
+from collections import defaultdict
+
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 from django.utils.encoding import smart_str
@@ -100,3 +102,42 @@ def get_denormalize_func():
         )
     except (AssertionError, AttributeError):
         return denormalize_attachment
+
+
+def get_matching_key(file_type, keys):
+    key = (file_type.label.lower(), file_type.name.lower())
+    for k in keys:
+        if k[0] == key[0] or k[1] == key[1]:
+            return k
+    return key
+
+
+def cleanup_filetypes():
+    """Combine FileTypes that have the same label/name
+
+    Get a list of the duplicates, include pk and group values
+    Update the group record for primary record
+    Update all attachment file type fields with primary record
+    Remove duplicate file type records
+    """
+    from unicef_attachments.models import Attachment, FileType
+
+    # get duplicates
+    duplicates = defaultdict(list)
+    for file_type in FileType.objects.order_by("pk"):
+        key = get_matching_key(file_type, duplicates.keys())
+        duplicates[key].append((file_type.pk, file_type.group))
+
+    for key, dups in duplicates.items():
+        if len(dups) > 1:
+            primary_pk, _ = dups.pop(0)
+            primary_file_type = FileType.objects.get(pk=primary_pk)
+            for pk, group in dups:
+                if not primary_file_type.group:
+                    primary_file_type.group = []
+                primary_file_type.group += group
+                primary_file_type.save()
+                Attachment.objects.filter(file_type__pk=pk).update(
+                    file_type=primary_file_type,
+                )
+                FileType.objects.get(pk=pk).delete()
