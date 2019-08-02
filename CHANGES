@@ -1,3 +1,8 @@
+Release 0.6.0
+-------------
+* Add group field to FileType
+* Add Django 2.2 compliance
+
 Release 0.5.1
 -------------
 * Better handling of attachments in admin views

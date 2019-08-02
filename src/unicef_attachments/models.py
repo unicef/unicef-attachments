@@ -4,13 +4,14 @@ from urllib.parse import urlsplit
 from django.conf import settings
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
+from django.contrib.postgres.fields import ArrayField
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.urls import reverse
 from django.utils.text import slugify
 from django.utils.translation import ugettext as _
 from model_utils.models import TimeStampedModel
-from ordered_model.models import OrderedModel
+from ordered_model.models import OrderedModel, OrderedModelManager, OrderedModelQuerySet
 
 from unicef_attachments.utils import filepath_prefix, get_denormalize_func
 
@@ -39,10 +40,28 @@ def generate_file_path(attachment, filename):
     return '/'.join(file_path)
 
 
+class FileTypeQueryset(OrderedModelQuerySet):
+    def group_by(self, group):
+        if not isinstance(group, list):
+            group = [group]
+        return self.filter(group__contains=group)
+
+
+class FileTypeManager(OrderedModelManager):
+    def get_queryset(self):
+        return FileTypeQueryset(self.model, using=self._db)
+
+    def group_by(self, group):
+        return self.get_queryset().group_by(group)
+
+
 class FileType(OrderedModel, models.Model):
     name = models.CharField(max_length=64, verbose_name=_('Name'))
     label = models.CharField(max_length=64, verbose_name=_('Label'))
     code = models.CharField(max_length=64, default="", verbose_name=_('Code'))
+    group = ArrayField(models.CharField(max_length=64, blank=True), null=True)
+
+    objects = FileTypeManager()
 
     def __str__(self):
         return self.label
@@ -102,7 +121,7 @@ class Attachment(TimeStampedModel, models.Model):
         return str(self.file)
 
     def clean(self):
-        super(Attachment, self).clean()
+        super().clean()
         if bool(self.file) == bool(self.hyperlink):
             raise ValidationError(_('Please provide file or hyperlink.'))
 
@@ -124,7 +143,7 @@ class Attachment(TimeStampedModel, models.Model):
         return reverse("attachments:file", args=[self.pk])
 
     def save(self, *args, **kwargs):
-        super(Attachment, self).save(*args, **kwargs)
+        super().save(*args, **kwargs)
 
         # check if we want to denormalize attachment data
         denormalize_func = get_denormalize_func()

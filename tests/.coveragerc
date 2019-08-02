@@ -1,6 +1,8 @@
 [run]
 branch = true
 source = etools_attachment
+omit =  **/__init__.py
+        **/migrations/**
 
 [report]
 fail_under = 95
