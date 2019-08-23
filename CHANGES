@@ -1,3 +1,7 @@
+Release 0.6.1
+-------------
+* Add AttachmentPermissions that can be overwritten
+
 Release 0.6.0
 -------------
 * Add group field to FileType

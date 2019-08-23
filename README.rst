@@ -14,11 +14,14 @@ Setup
 -----
 
 Add ``unicef_attachments`` to ``INSTALLED_APPS`` in settings
+.. code-block:: python
 
-    INSTALLED_APPS = [
-        ...
-        'unicef_attachments',
-    ]
+    INSTALLED_APPS = (
+      ...
+      'unicef_attachments',
+
+    )
+
 
 
 Usage
