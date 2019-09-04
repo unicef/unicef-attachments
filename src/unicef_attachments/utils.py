@@ -53,6 +53,30 @@ def get_attachment_flat_model():
         return _attachment_flat_model()
 
 
+def _attachment_permissions():
+    from unicef_attachments.permissions import AttachmentPermissions
+    return AttachmentPermissions
+
+
+def get_attachment_permissions():
+    try:
+        dotted_path = settings.ATTACHMENT_PERMISSIONS
+        assert dotted_path is not None
+        module, func_name = dotted_path.rsplit('.', 1)
+        module, func = smart_str(module), smart_str(func_name)
+        func = getattr(__import__(module, {}, {}, [func]), func)
+        return func
+    except ImportError as e:
+        raise ImproperlyConfigured(
+            'Could not import ATTACHMENT_PERMISSIONS {}: {}'.format(
+                settings.ATTACHMENT_PERMISSIONS,
+                e
+            )
+        )
+    except (AssertionError, AttributeError):
+        return _attachment_permissions()
+
+
 def get_file_type(obj):
     if obj.file_type:
         return obj.file_type.label

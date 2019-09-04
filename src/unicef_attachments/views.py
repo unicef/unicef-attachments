@@ -9,7 +9,6 @@ from drf_querystringfilter.backend import QueryStringFilterBackend
 from rest_framework.exceptions import NotFound
 from rest_framework.generics import CreateAPIView, DestroyAPIView, ListAPIView, ListCreateAPIView, UpdateAPIView
 from rest_framework.parsers import FormParser, MultiPartParser
-from rest_framework.permissions import IsAdminUser
 from rest_framework.response import Response
 
 from unicef_attachments.models import Attachment, AttachmentLink
@@ -18,7 +17,7 @@ from unicef_attachments.serializers import (
     AttachmentFlatSerializer,
     AttachmentLinkSerializer,
 )
-from unicef_attachments.utils import get_attachment_flat_model
+from unicef_attachments.utils import get_attachment_flat_model, get_attachment_permissions
 
 
 class AttachmentListView(ListAPIView):
@@ -26,14 +25,14 @@ class AttachmentListView(ListAPIView):
         Q(attachment__file__isnull=True) | Q(attachment__file__exact=""),
         Q(attachment__hyperlink__isnull=True) | Q(attachment__hyperlink__exact="")
     )
-    permission_classes = (IsAdminUser, )
+    permission_classes = (get_attachment_permissions(), )
     serializer_class = AttachmentFlatSerializer
     filter_backends = (QueryStringFilterBackend,)
     filter_fields = [f for f in AttachmentFlatSerializer().fields]
 
 
 class AttachmentLinkListCreateView(ListCreateAPIView):
-    permission_classes = (IsAdminUser, )
+    permission_classes = (get_attachment_permissions(), )
     serializer_class = AttachmentLinkSerializer
 
     def set_content_object(self):
@@ -72,7 +71,7 @@ class AttachmentLinkListCreateView(ListCreateAPIView):
 
 class AttachmentLinkDeleteView(DestroyAPIView):
     queryset = AttachmentLink.objects.all()
-    permission_classes = (IsAdminUser, )
+    permission_classes = (get_attachment_permissions(), )
     serializer_class = AttachmentLinkSerializer
 
 
@@ -99,7 +98,7 @@ class AttachmentFileView(DetailView):
 
 class AttachmentCreateView(CreateAPIView):
     queryset = Attachment.objects.all()
-    permission_classes = (IsAdminUser,)
+    permission_classes = (get_attachment_permissions(),)
     serializer_class = AttachmentFileUploadSerializer
     parser_classes = (FormParser, MultiPartParser,)
 
@@ -119,7 +118,7 @@ class AttachmentCreateView(CreateAPIView):
 
 class AttachmentUpdateView(UpdateAPIView):
     queryset = Attachment.objects.all()
-    permission_classes = (IsAdminUser,)
+    permission_classes = (get_attachment_permissions(),)
     serializer_class = AttachmentFileUploadSerializer
     parser_classes = (FormParser, MultiPartParser,)
 
