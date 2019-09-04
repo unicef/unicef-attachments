@@ -1,3 +1,7 @@
+Release 0.5.2
+-------------
+* Add AttachmentPermissions and ability to override
+
 Release 0.5.1
 -------------
 * Better handling of attachments in admin views
