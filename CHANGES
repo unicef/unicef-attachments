@@ -1,3 +1,9 @@
+Release 0.7 (in development)
+-------------
+* Add support to python 3.8
+* Remove support to python 3.6
+
+
 Release 0.6.1
 -------------
 * Add AttachmentPermissions that can be overwritten
