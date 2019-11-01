@@ -30,9 +30,4 @@ urlpatterns = (
         view=views.AttachmentCreateView.as_view(),
         name='create'
     ),
-    url(
-        r'^upload/(?P<pk>\d+)/$',
-        view=views.AttachmentUpdateView.as_view(),
-        name='update'
-    ),
 )
