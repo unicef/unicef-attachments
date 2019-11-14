@@ -21,13 +21,6 @@ with open(init, 'rb') as f:
     NAME = str(ast.literal_eval(_name_re.search(content).group(1)))
 
 
-def read(*files):
-    content = []
-    for f in files:
-        content.extend(codecs.open(os.path.join(ROOT, 'src', 'requirements', f), 'r').readlines())
-    return "\n".join(filter(lambda l:not l.startswith('-'), content))
-
-
 setup(
     name=NAME,
     version=VERSION,
@@ -68,8 +61,8 @@ setup(
     platforms=['any'],
     classifiers=[
         'Environment :: Web Environment',
-        'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
         'Framework :: Django',
         'Framework :: Django :: 2.1',
         'Framework :: Django :: 2.2',

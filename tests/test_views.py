@@ -171,6 +171,7 @@ def test_attachment_create_post(client, upload_file, user, headers):
     assert attachment.file_type is None
 
 
+@pytest.mark.skip("removed endpoint")
 def test_attachment_update_forbidden(client, attachment, upload_file, headers):
     response = client.get(
         reverse("attachments:update", args=[attachment.pk]),
@@ -180,6 +181,7 @@ def test_attachment_update_forbidden(client, attachment, upload_file, headers):
     assert response.status_code == status.HTTP_403_FORBIDDEN
 
 
+@pytest.mark.skip("removed endpoint")
 def test_attachment_update_get(client, attachment, upload_file, user, headers):
     client.force_login(user)
     response = client.get(
@@ -190,6 +192,7 @@ def test_attachment_update_get(client, attachment, upload_file, user, headers):
     assert response.status_code == status.HTTP_405_METHOD_NOT_ALLOWED
 
 
+@pytest.mark.skip("removed endpoint")
 def test_attachment_update_post(client, attachment, upload_file, user, headers):
     client.force_login(user)
     response = client.get(
@@ -200,6 +203,7 @@ def test_attachment_update_post(client, attachment, upload_file, user, headers):
     assert response.status_code == status.HTTP_405_METHOD_NOT_ALLOWED
 
 
+@pytest.mark.skip("removed endpoint")
 def test_attachment_update_put(api_client, attachment_blank, upload_file, user, headers):
     api_client.force_login(user)
     assert not attachment_blank.file
@@ -219,6 +223,7 @@ def test_attachment_update_put(api_client, attachment_blank, upload_file, user, 
     assert attachment_update.file
 
 
+@pytest.mark.skip("removed endpoint")
 def test_attachment_update_patch(api_client, attachment_blank, upload_file, user, headers):
     api_client.force_login(user)
     assert not attachment_blank.file
@@ -237,6 +242,7 @@ def test_attachment_update_patch(api_client, attachment_blank, upload_file, user
     )
 
 
+@pytest.mark.skip("removed endpoint")
 def test_attachment_update_put_target(api_client, attachment_blank, upload_file, user, headers):
     api_client.force_login(user)
     """Ensure update only affects specified attachment"""
