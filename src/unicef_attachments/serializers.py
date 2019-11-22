@@ -1,7 +1,7 @@
 import types
 
 from django.contrib.auth import get_user_model
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 from unicef_restlib.fields import SeparatedReadWriteField

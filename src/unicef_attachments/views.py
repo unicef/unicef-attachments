@@ -3,7 +3,7 @@ from urllib.parse import urljoin
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import Q
 from django.http import HttpResponseNotFound, HttpResponseRedirect
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 from django.views.generic.detail import DetailView
 from drf_querystringfilter.backend import QueryStringFilterBackend
 from rest_framework.exceptions import NotFound
