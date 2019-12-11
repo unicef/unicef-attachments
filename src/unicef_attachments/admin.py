@@ -48,5 +48,5 @@ class AttachmentInline(ct_admin.GenericTabularInline):
 
 
 class AttachmentSingleInline(AttachmentInline):
-    def has_add_permission(self, request):
+    def has_add_permission(self, request, obj=None):
         return False
