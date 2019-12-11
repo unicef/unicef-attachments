@@ -3,6 +3,8 @@ Release 0.7
 * Remove update endpoint
 * Add support to python 3.8
 * Remove support to python 3.6
+* Add support to django 3.0
+* Remove support to django 2.1
 
 
 Release 0.6.1
