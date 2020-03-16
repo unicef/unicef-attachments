@@ -25,4 +25,4 @@ jobs:
       - name: Install Tox and any other packages
         run: pip install tox
       - name: Run Tox
-        run: tox -e "py${{ matrix.python-version//. }}-d${{ matrix.django-version//. }}" -- py.test tests -v
+        run: tox -e "py${{ matrix.python-version }}-d${{ matrix.django-version }}" -- py.test tests -v
