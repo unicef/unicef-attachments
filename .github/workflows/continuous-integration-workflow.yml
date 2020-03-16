@@ -6,7 +6,7 @@ jobs:
     container: python:latest
     services:
       postgres:
-        image: postgres:9.5-alpine
+        image: postgres:9.5
       options: >-
         --health-cmd pg_isready
         --health-interval 10s
