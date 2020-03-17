@@ -29,3 +29,4 @@ jobs:
         env:
           DATABASE_HOST: postgres
           DATABASE_NAME: postgres
+          DATABASE_PASSWORD: postgres

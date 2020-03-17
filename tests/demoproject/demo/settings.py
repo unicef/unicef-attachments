@@ -82,6 +82,7 @@ DATABASES = {
         'HOST': os.environ.get("DATABASE_HOST", "127.0.0.1"),
         'NAME': os.environ.get("DATABASE_NAME", "unicef_attachments"),
         'USER': 'postgres',
+        'PASSWORD': os.environ.get("DATABASE_PASSWORD", ""),
     }
 }
 
