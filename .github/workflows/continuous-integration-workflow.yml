@@ -28,3 +28,4 @@ jobs:
         run: tox -e "py${{ matrix.python-version }}-d${{ matrix.django-version }}" -- py.test tests -v
         env:
           DATABASE_HOST: postgres
+          DATABASE_NAME: postgres

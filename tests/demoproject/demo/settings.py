@@ -80,7 +80,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'HOST': os.environ.get("DATABASE_HOST", "127.0.0.1"),
-        'NAME': 'unicef_attachments',
+        'NAME': os.environ.get("DATABASE_NAME", "unicef_attachments"),
         'USER': 'postgres',
     }
 }
