@@ -79,7 +79,7 @@ WSGI_APPLICATION = 'demo.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'HOST': '127.0.0.1',
+        'HOST': os.environ.get("DATABASE_HOST", "127.0.0.1"),
         'NAME': 'unicef_attachments',
         'USER': 'postgres',
     }
