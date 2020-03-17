@@ -30,3 +30,8 @@ jobs:
           DATABASE_HOST: postgres
           DATABASE_NAME: postgres
           DATABASE_PASSWORD: postgres
+      - name: Archive code coverage results
+        uses: actions/upload-artifact@v1
+        with:
+          name: code-coverage-report
+          path: build/coverage/index.html
