@@ -1,5 +1,6 @@
-import pytest
 from django.forms import ValidationError
+
+import pytest
 
 from unicef_attachments.validators import SafeFileValidator
 

@@ -1,6 +1,7 @@
+from rest_framework import viewsets
+
 from demo.sample import serializers
 from demo.sample.models import Author, Book
-from rest_framework import viewsets
 
 
 class AuthorViewSet(viewsets.ModelViewSet):
