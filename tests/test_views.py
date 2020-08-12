@@ -1,9 +1,9 @@
-from unittest.mock import Mock, patch
-
-import pytest
 from django.contrib.contenttypes.models import ContentType
 from django.urls import reverse
 from rest_framework import status
+
+import pytest
+from unittest.mock import Mock, patch
 
 from tests.factories import AttachmentFactory, AttachmentFileTypeFactory
 from unicef_attachments.models import Attachment, AttachmentLink

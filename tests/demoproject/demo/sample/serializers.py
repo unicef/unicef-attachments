@@ -1,9 +1,10 @@
-from demo.sample.models import Author, Book
 from rest_framework import serializers
 
 from unicef_attachments.fields import AttachmentSingleFileField, FileTypeModelChoiceField
 from unicef_attachments.models import FileType
 from unicef_attachments.serializers import AttachmentSerializerMixin
+
+from demo.sample.models import Author, Book
 
 
 class BookSerializer(serializers.ModelSerializer):
