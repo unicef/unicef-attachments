@@ -1,12 +1,14 @@
 import base64
 
-import pytest
-from demo.sample.serializers import AuthorFileTypeSerializer
 from rest_framework import serializers
+
+import pytest
 
 from tests.factories import AttachmentFactory, AttachmentFileTypeFactory
 from unicef_attachments.fields import AttachmentSingleFileField, Base64FileField
 from unicef_attachments.models import Attachment
+
+from demo.sample.serializers import AuthorFileTypeSerializer
 
 pytestmark = pytest.mark.django_db
 

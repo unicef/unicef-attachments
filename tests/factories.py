@@ -1,9 +1,11 @@
-import factory
-from demo.sample.models import Author, Book
 from django.contrib.auth import get_user_model
+
+import factory
 from factory import fuzzy
 
 from unicef_attachments import models
+
+from demo.sample.models import Author, Book
 
 
 class UserFactory(factory.django.DjangoModelFactory):

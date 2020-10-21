@@ -1,13 +1,15 @@
-import pytest
-from demo.sample.models import AttachmentFlatOverride
-from demo.sample.permissions import AttachmentPermOverride
-from demo.sample.utils import denormalize, filepath_prefix
 from django.core.exceptions import ImproperlyConfigured
+
+import pytest
 
 from tests.factories import AttachmentFactory, AttachmentFileTypeFactory
 from unicef_attachments import utils
 from unicef_attachments.models import AttachmentFlat, FileType
 from unicef_attachments.permissions import AttachmentPermissions
+
+from demo.sample.models import AttachmentFlatOverride
+from demo.sample.permissions import AttachmentPermOverride
+from demo.sample.utils import denormalize, filepath_prefix
 
 pytestmark = pytest.mark.django_db
 

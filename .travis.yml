@@ -9,9 +9,10 @@ python:
 env:
   - DJANGO=2.2
   - DJANGO=3.0
+  - DJANGO=3.1
 
 addons:
-  postgresql: "9.5"
+  postgresql: "9.6"
 
 install:
   - pip install tox codecov
