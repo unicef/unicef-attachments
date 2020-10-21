@@ -1,6 +1,7 @@
 from urllib.parse import urljoin
 
 from django.contrib.contenttypes.models import ContentType
+from django.db import transaction
 from django.db.models import Q
 from django.http import HttpResponseNotFound, HttpResponseRedirect
 from django.utils.translation import gettext as _
@@ -105,15 +106,13 @@ class AttachmentCreateView(CreateAPIView):
     def perform_create(self, serializer):
         self.instance = serializer.save()
 
+    @transaction.atomic
     def post(self, *args, **kwargs):
         super().post(*args, **kwargs)
-        return Response(
-            AttachmentFlatSerializer(
-                get_attachment_flat_model().objects.filter(
-                    attachment=self.instance
-                ).first()
-            ).data
-        )
+        attachment_flat = get_attachment_flat_model().objects.filter(
+            attachment=self.instance
+        ).first()
+        return Response(AttachmentFlatSerializer(attachment_flat).data)
 
 
 class AttachmentUpdateView(UpdateAPIView):
