@@ -12,8 +12,8 @@ env:
   - DJANGO=3.0
   - DJANGO=3.1
 
-addons:
-  postgresql: "9.6"
+services:
+  - postgresql
 
 install:
   - pip install tox codecov
