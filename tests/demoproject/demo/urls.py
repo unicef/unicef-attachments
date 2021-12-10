@@ -1,8 +1,8 @@
-from django.conf.urls import include, url
 from django.contrib import admin
+from django.urls import include, path
 
 urlpatterns = [
-    url(r'^sample/', include('demo.sample.urls')),
-    url(r'^attachments/', include('unicef_attachments.urls')),
-    url(r'^admin/', admin.site.urls),
+    path(r'^sample/', include('demo.sample.urls')),
+    path(r'^attachments/', include('unicef_attachments.urls')),
+    path(r'^admin/', admin.site.urls),
 ]

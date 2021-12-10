@@ -1,7 +1,8 @@
 Release 0.10 (in development)
 ------------
 * Add support to python 3.9
-* Add support to django 3.2
+* Add support to django 3.2, 4.0
+* Added ip to flat attachment and attachment
 
 
 Release 0.9
