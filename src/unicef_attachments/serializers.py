@@ -7,7 +7,7 @@ from rest_framework.exceptions import ValidationError
 from unicef_restlib.fields import SeparatedReadWriteField
 from unicef_restlib.serializers import UserContextSerializerMixin
 
-from unicef_attachments.fields import AttachmentSingleFileField, Base64FileField
+from unicef_attachments.fields import AttachmentSingleFileField, Base64FileField, CurrentIPDefault
 from unicef_attachments.models import Attachment, AttachmentLink, FileType
 from unicef_attachments.utils import get_attachment_flat_model
 from unicef_attachments.validators import SafeFileValidator
@@ -32,6 +32,10 @@ class BaseAttachmentSerializer(UserContextSerializerMixin, serializers.ModelSeri
     uploaded_by = SeparatedReadWriteField(
         write_field=serializers.HiddenField(default=serializers.CurrentUserDefault()),
         read_field=SimpleUserSerializer(label=_('Uploaded By')),
+    )
+    ip_address = SeparatedReadWriteField(
+        write_field=serializers.HiddenField(default=CurrentIPDefault()),
+        read_field=serializers.ReadOnlyField(label=_('IP Address')),
     )
 
     def _validate_attachment(self, validated_data, instance=None):
@@ -126,13 +130,12 @@ class AttachmentLinkSerializer(serializers.ModelSerializer):
 
 class AttachmentFileUploadSerializer(serializers.ModelSerializer):
     file = serializers.FileField(validators=[SafeFileValidator()])
-    uploaded_by = serializers.HiddenField(
-        default=serializers.CurrentUserDefault()
-    )
+    uploaded_by = serializers.HiddenField(default=serializers.CurrentUserDefault())
+    ip_address = serializers.HiddenField(default=CurrentIPDefault())
 
     class Meta:
         model = Attachment
-        fields = ["file", "uploaded_by"]
+        fields = ["file", "uploaded_by", "ip_address"]
 
 
 def validate_attachment(cls, data):

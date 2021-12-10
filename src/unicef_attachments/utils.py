@@ -103,6 +103,7 @@ def denormalize_attachment(attachment):
             "file_link": attachment.file_link,
             "filename": attachment.filename,
             "uploaded_by": uploaded_by,
+            "ip_address": attachment.ip_address,
             "created": attachment.created.strftime("%d %b %Y"),
         }
     )
@@ -165,3 +166,12 @@ def cleanup_filetypes():
                     file_type=primary_file_type,
                 )
                 FileType.objects.get(pk=pk).delete()
+
+
+def get_client_ip(request):
+    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+    if x_forwarded_for:
+        ip = x_forwarded_for.split(',')[0]
+    else:
+        ip = request.META.get('REMOTE_ADDR')
+    return ip
