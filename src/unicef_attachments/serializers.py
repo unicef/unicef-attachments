@@ -63,6 +63,7 @@ class BaseAttachmentSerializer(UserContextSerializerMixin, serializers.ModelSeri
             'created',
             'modified',
             'uploaded_by',
+            'ip_address',
             'filename',
         ]
         extra_kwargs = {
