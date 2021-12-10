@@ -71,7 +71,7 @@ class FileType(OrderedModel, models.Model):
         ordering = ('code', 'order')
 
 
-class Attachment(TimeStampedModel, models.Model):
+class Attachment(TimeStampedModel):
     file_type = models.ForeignKey(
         FileType,
         verbose_name=_('Document Type'),
@@ -113,6 +113,7 @@ class Attachment(TimeStampedModel, models.Model):
         null=True,
         on_delete=models.CASCADE,
     )
+    ip_address = models.GenericIPAddressField(default='0.0.0.0')
 
     class Meta:
         ordering = ['id', ]
@@ -202,6 +203,7 @@ class AttachmentFlat(models.Model):
         verbose_name=_('Uploaded by')
     )
     created = models.CharField(max_length=50, verbose_name=_('Created'))
+    ip_address = models.GenericIPAddressField(default='0.0.0.0')
 
     def __str__(self):
         return str(self.attachment)

@@ -19,6 +19,7 @@ class AttachmentAdmin(admin.ModelAdmin):
         'file',
         'modified',
         'uploaded_by',
+        'ip_address',
     ]
     list_filter = ['file_type', 'uploaded_by', ]
 

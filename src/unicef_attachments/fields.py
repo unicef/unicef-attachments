@@ -7,6 +7,8 @@ from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 from unicef_restlib.fields import ModelChoiceField
 
+from unicef_attachments.utils import get_client_ip
+
 
 class FileTypeModelChoiceField(ModelChoiceField):
     def get_choice(self, obj):
@@ -68,4 +70,14 @@ class AttachmentSingleFileField(serializers.Field):
         during validation
         """
         attachment = getattr(self.parent.Meta.model, self.source)
-        return (data, attachment.field.code)
+        return data, attachment.field.code
+
+
+class CurrentIPDefault:
+    requires_context = True
+
+    def __call__(self, serializer_field):
+        return get_client_ip(serializer_field.context['request'])
+
+    def __repr__(self):
+        return '%s()' % self.__class__.__name__
