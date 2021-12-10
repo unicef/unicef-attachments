@@ -40,6 +40,7 @@ setup(
         'django-ordered-model',
         'drf-querystringfilter',
         'python-magic',
+        'pytz',
         'unicef-restlib',
     ),
     extras_require={
@@ -55,7 +56,6 @@ setup(
             'pytest-django',
             'pytest-echo',
             'pytest-pythonpath',
-            'pytz',
             'psycopg2-binary',
         ),
     },
