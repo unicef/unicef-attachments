@@ -18,7 +18,7 @@ from unicef_attachments.serializers import (
     AttachmentFlatSerializer,
     AttachmentLinkSerializer,
 )
-from unicef_attachments.utils import get_attachment_flat_model, get_attachment_permissions
+from unicef_attachments.utils import get_attachment_flat_model, get_attachment_permissions, get_client_ip
 
 
 class AttachmentListView(ListAPIView):
@@ -125,6 +125,7 @@ class AttachmentUpdateView(UpdateAPIView):
         # force the updating of the uploaded by field to current user
         # this is not set when PATCH request made
         serializer.instance.uploaded_by = serializer.context["request"].user
+        serializer.instance.ip_address = get_client_ip(serializer.context["request"])
         self.instance = serializer.save()
 
     def put(self, *args, **kwargs):

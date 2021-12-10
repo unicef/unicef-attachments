@@ -10,3 +10,7 @@ coverage.xml
 .idea/
 Pipfile
 Pipfile.lock
+.env
+.envrc
+.venv/
+.DS_Store/

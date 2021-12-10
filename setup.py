@@ -40,6 +40,7 @@ setup(
         'django-ordered-model',
         'drf-querystringfilter',
         'python-magic',
+        'pytz',
         'unicef-restlib',
     ),
     extras_require={
@@ -61,12 +62,10 @@ setup(
     platforms=['any'],
     classifiers=[
         'Environment :: Web Environment',
-        'Programming Language :: Python :: 3.7',
-        'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.9',
         'Framework :: Django',
-        'Framework :: Django :: 2.2',
-        'Framework :: Django :: 3.0',
-        'Framework :: Django :: 3.1',
+        'Framework :: Django :: 3.2',
+        'Framework :: Django :: 4.0',
         'Intended Audience :: Developers'],
     scripts=[],
 )
