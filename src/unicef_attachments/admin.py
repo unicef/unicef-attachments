@@ -21,7 +21,8 @@ class AttachmentAdmin(admin.ModelAdmin):
         'uploaded_by',
         'ip_address',
     ]
-    list_filter = ['file_type', 'uploaded_by', ]
+    list_filter = ['file_type', ]
+    raw_id_fields = ['uploaded_by', ]
 
 
 class AttachmentInlineAdminMixin:
