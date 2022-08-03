@@ -1,3 +1,8 @@
+Release 0.12 (in development)
+--------------
+* added support to django 4.1
+
+
 Release 0.11
 --------------
 * increased hyperlink field size

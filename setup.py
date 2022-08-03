@@ -55,7 +55,6 @@ setup(
             'pytest-cov',
             'pytest-django',
             'pytest-echo',
-            'pytest-pythonpath',
             'psycopg2-binary',
         ),
     },
