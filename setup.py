@@ -68,4 +68,3 @@ setup(
         'Intended Audience :: Developers'],
     scripts=[],
 )
-

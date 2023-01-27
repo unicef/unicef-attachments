@@ -5,10 +5,16 @@ from django.db import transaction
 from django.db.models import Q
 from django.http import HttpResponseNotFound, HttpResponseRedirect
 from django.utils.translation import gettext as _
-from django.views.generic.detail import DetailView
 from drf_querystringfilter.backend import QueryStringFilterBackend
 from rest_framework.exceptions import NotFound
-from rest_framework.generics import CreateAPIView, DestroyAPIView, ListAPIView, ListCreateAPIView, UpdateAPIView
+from rest_framework.generics import (
+    CreateAPIView,
+    DestroyAPIView,
+    ListAPIView,
+    ListCreateAPIView,
+    RetrieveAPIView,
+    UpdateAPIView,
+)
 from rest_framework.parsers import FormParser, MultiPartParser
 from rest_framework.response import Response
 
@@ -76,24 +82,21 @@ class AttachmentLinkDeleteView(DestroyAPIView):
     serializer_class = AttachmentLinkSerializer
 
 
-class AttachmentFileView(DetailView):
-    model = Attachment
+class AttachmentFileView(RetrieveAPIView):
+    queryset = Attachment.objects.all()
+    permission_classes = (get_attachment_permissions(),)
 
-    def get(self, *args, **kwargs):
-        try:
-            attachment = Attachment.objects.get(pk=kwargs["pk"])
-        except Attachment.DoesNotExist:
-            return HttpResponseNotFound(
-                _("No Attachment matches the given query.")
-            )
-        if not attachment or (not attachment.file and not attachment.hyperlink):
-            return HttpResponseNotFound(
-                _("Attachment has no file or hyperlink")
-            )
-        url = urljoin(
-            "https://{}".format(self.request.get_host()),
-            attachment.url
-        )
+    def get_object(self):
+        attachment = super().get_object()
+
+        if not attachment.file and not attachment.hyperlink:
+            return HttpResponseNotFound(_("Attachment has no file or hyperlink"))
+
+        return attachment
+
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        url = urljoin("https://{}".format(self.request.get_host()), instance.url)
         return HttpResponseRedirect(url)
 
 
