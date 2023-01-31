@@ -114,6 +114,7 @@ class Attachment(TimeStampedModel):
         on_delete=models.CASCADE,
     )
     ip_address = models.GenericIPAddressField(default='0.0.0.0')
+    is_active = models.BooleanField(default=True)
 
     class Meta:
         ordering = ['id', ]
