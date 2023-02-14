@@ -5,7 +5,8 @@ import uuid
 from django.core.files.base import ContentFile
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
-from unicef_restlib.fields import ModelChoiceField
+from rest_framework.fields import get_attribute
+from unicef_restlib.fields import ModelChoiceField, SeparatedReadWriteField
 
 from unicef_attachments.utils import get_client_ip
 
@@ -47,17 +48,13 @@ class AttachmentSingleFileField(serializers.Field):
         return None
 
     def get_attribute(self, instance):
-        attachment = self.get_attachment(instance)
-        return attachment.file if attachment is not None else None
+        return self.get_attachment(instance)
 
     def to_representation(self, value):
         if not value:
             return None
 
-        if not getattr(value, "url", None):
-            return None
-
-        url = value.url
+        url = value.file_link
         request = self.context.get('request', None)
         if request is not None:
             return request.build_absolute_uri(url)
@@ -81,3 +78,36 @@ class CurrentIPDefault:
 
     def __repr__(self):
         return '%s()' % self.__class__.__name__
+
+
+class AbsoluteUrlField(serializers.CharField):
+    """
+    build absolute url automatically using current domain when possible
+    """
+
+    def __init__(self, *args, **kwargs):
+        kwargs.setdefault('read_only', True)
+        super().__init__(*args, **kwargs)
+
+    def to_representation(self, value):
+        if not value:
+            return value
+
+        request = self.context.get('request', None)
+        if request is None:
+            return value
+
+        return request.build_absolute_uri(value)
+
+
+class PermittedAttachmentField(SeparatedReadWriteField):
+    """
+    split read and write source. write file/hyperlink; read file_link if value provided
+    return file_link instead of original field value to enforce download file view permissions
+    """
+    def get_attribute(self, instance):
+        value = get_attribute(instance, self.source_attrs)
+        if not value:
+            return value
+
+        return instance.file_link

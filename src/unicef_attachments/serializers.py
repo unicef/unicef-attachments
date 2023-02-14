@@ -7,7 +7,13 @@ from rest_framework.exceptions import ValidationError
 from unicef_restlib.fields import SeparatedReadWriteField
 from unicef_restlib.serializers import UserContextSerializerMixin
 
-from unicef_attachments.fields import AttachmentSingleFileField, Base64FileField, CurrentIPDefault
+from unicef_attachments.fields import (
+    AbsoluteUrlField,
+    AttachmentSingleFileField,
+    Base64FileField,
+    CurrentIPDefault,
+    PermittedAttachmentField,
+)
 from unicef_attachments.models import Attachment, AttachmentLink, FileType
 from unicef_attachments.utils import get_attachment_flat_model
 from unicef_attachments.validators import SafeFileValidator
@@ -37,6 +43,10 @@ class BaseAttachmentSerializer(UserContextSerializerMixin, serializers.ModelSeri
         write_field=serializers.HiddenField(default=CurrentIPDefault()),
         read_field=serializers.ReadOnlyField(label=_('IP Address')),
     )
+    # both file and hyperlink are editable yet wrapped with file_link attribute,
+    #  so it's not possible to extract direct url to bypass permissions
+    file = PermittedAttachmentField(read_field=AbsoluteUrlField())
+    hyperlink = PermittedAttachmentField(read_field=AbsoluteUrlField())
 
     def _validate_attachment(self, validated_data, instance=None):
         file_attachment = validated_data.get('file', None) or (instance.file if instance else None)
