@@ -14,49 +14,55 @@ pytestmark = pytest.mark.django_db
 
 
 def test_base64_create_invalid(file_type):
-    serializer = Base64AttachmentSerializer(data={
-        'file_type': file_type.pk,
-    }, context={'user': UserFactory()})
+    serializer = Base64AttachmentSerializer(
+        data={
+            "file_type": file_type.pk,
+        },
+        context={"user": UserFactory()},
+    )
 
     assert serializer.is_valid()
     # file and hyperlink validation were moved to save in fact
     with pytest.raises(ValidationError) as ex:
         serializer.save()
 
-    assert 'Please provide file or hyperlink.' in ex.value.detail
+    assert "Please provide file or hyperlink." in ex.value.detail
 
 
 def test_base64_create_valid(file_type, base64_file):
-    serializer = Base64AttachmentSerializer(data={
-        'file': base64_file,
-        'file_name': "simple_file.txt",
-        'file_type': file_type.pk,
-    }, context={'user': UserFactory()})
+    serializer = Base64AttachmentSerializer(
+        data={
+            "file": base64_file,
+            "file_name": "simple_file.txt",
+            "file_type": file_type.pk,
+        },
+        context={"user": UserFactory()},
+    )
     assert serializer.is_valid()
 
     attachment_instance = serializer.save(content_object=file_type)
 
-    assert os.path.splitext(
-        os.path.split(attachment_instance.file.url)[-1]
-    )[0].startswith(
+    assert os.path.splitext(os.path.split(attachment_instance.file.url)[-1])[0].startswith(
         os.path.splitext("simple_file.txt")[0]
     )
 
 
 def test_base64_update_valid(file_type, attachment, base64_file):
-    serializer = Base64AttachmentSerializer(attachment, data={
-        'file': base64_file,
-        'file_name': "simple_file.txt",
-        'file_type': file_type.pk,
-    }, context={'user': UserFactory()})
+    serializer = Base64AttachmentSerializer(
+        attachment,
+        data={
+            "file": base64_file,
+            "file_name": "simple_file.txt",
+            "file_type": file_type.pk,
+        },
+        context={"user": UserFactory()},
+    )
     assert serializer.is_valid()
 
     attachment_instance = serializer.save(content_object=file_type)
 
     assert attachment_instance.pk == attachment.pk
-    assert os.path.splitext(
-        os.path.split(attachment_instance.file.url)[-1]
-    )[0].startswith(
+    assert os.path.splitext(os.path.split(attachment_instance.file.url)[-1])[0].startswith(
         os.path.splitext("simple_file.txt")[0]
     )
 
@@ -64,58 +70,52 @@ def test_base64_update_valid(file_type, attachment, base64_file):
 def test_attachment_serializer_invalid_value_error(attachment_empty):
     assert not attachment_empty.code
     assert not attachment_empty.file_type
-    serializer = AuthorSerializer(data={
-        "first_name": "Joe",
-        "last_name": "Soap",
-        "profile_image": "wrong",
-    })
+    serializer = AuthorSerializer(
+        data={
+            "first_name": "Joe",
+            "last_name": "Soap",
+            "profile_image": "wrong",
+        }
+    )
     assert not serializer.is_valid()
-    assert serializer.errors == {
-        "profile_image": ["Attachment expects an integer"]
-    }
+    assert serializer.errors == {"profile_image": ["Attachment expects an integer"]}
 
 
 def test_attachment_serializer_invalid_type_error(attachment_empty, upload_file):
     assert not attachment_empty.code
     assert not attachment_empty.file_type
-    serializer = AuthorSerializer(data={
-        "first_name": "Joe",
-        "last_name": "Soap",
-        "profile_image": upload_file,
-    })
+    serializer = AuthorSerializer(
+        data={
+            "first_name": "Joe",
+            "last_name": "Soap",
+            "profile_image": upload_file,
+        }
+    )
     assert not serializer.is_valid()
-    assert serializer.errors == {
-        "profile_image": ["Attachment expects an integer"]
-    }
+    assert serializer.errors == {"profile_image": ["Attachment expects an integer"]}
 
 
 def test_attachment_serializer_invalid_attachment(attachment_empty):
     assert not attachment_empty.code
     assert not attachment_empty.file_type
-    serializer = AuthorSerializer(data={
-        "first_name": "Joe",
-        "last_name": "Soap",
-        "profile_image": 404,
-    })
+    serializer = AuthorSerializer(
+        data={
+            "first_name": "Joe",
+            "last_name": "Soap",
+            "profile_image": 404,
+        }
+    )
     assert not serializer.is_valid()
-    assert serializer.errors == {
-        "profile_image": ["Attachment does not exist"]
-    }
+    assert serializer.errors == {"profile_image": ["Attachment does not exist"]}
 
 
 def test_attachment_serializer_invalid_associated(attachment):
     file_type = AttachmentFileTypeFactory(code="author_profile_image")
     assert attachment.file_type != file_type
-    serializer = AuthorSerializer(data={
-        "first_name": "Joe",
-        "last_name": "Soap",
-        "profile_image": attachment.pk
-    })
+    serializer = AuthorSerializer(data={"first_name": "Joe", "last_name": "Soap", "profile_image": attachment.pk})
     assert not serializer.is_valid()
     assert serializer.errors == {
-        "profile_image": ["Attachment is already associated: {}".format(
-            attachment.content_object
-        )]
+        "profile_image": ["Attachment is already associated: {}".format(attachment.content_object)]
     }
 
 
@@ -123,11 +123,7 @@ def test_attachment_serializer_save(attachment_empty):
     file_type = AttachmentFileTypeFactory(code="author_profile_image")
     assert not attachment_empty.code
     assert not attachment_empty.file_type
-    serializer = AuthorSerializer(data={
-        "first_name": "Joe",
-        "last_name": "Soap",
-        "profile_image": attachment_empty.pk
-    })
+    serializer = AuthorSerializer(data={"first_name": "Joe", "last_name": "Soap", "profile_image": attachment_empty.pk})
     assert serializer.is_valid()
     serializer.save()
 
@@ -144,11 +140,9 @@ def test_attachment_serializer_update(author):
         code=file_type.code,
         file="test.pdf",
     )
-    serializer = AuthorSerializer(author, data={
-        "first_name": "Joe",
-        "last_name": "Soap",
-        "profile_image": attachment.pk
-    })
+    serializer = AuthorSerializer(
+        author, data={"first_name": "Joe", "last_name": "Soap", "profile_image": attachment.pk}
+    )
     assert serializer.is_valid()
     serializer.save()
 
@@ -161,10 +155,12 @@ def test_attachment_serializer_update(author):
 def test_attachment_serializer_no_attachment(attachment_empty):
     assert not attachment_empty.code
     assert not attachment_empty.file_type
-    serializer = AuthorSerializer(data={
-        "first_name": "Joe",
-        "last_name": "Soap",
-    })
+    serializer = AuthorSerializer(
+        data={
+            "first_name": "Joe",
+            "last_name": "Soap",
+        }
+    )
     assert serializer.is_valid()
     serializer.save()
 
@@ -175,11 +171,9 @@ def test_attachment_serializer_no_attachment(attachment_empty):
 
 def test_attachment_serializer_override(attachment_empty):
     assert not attachment_empty.code
-    serializer = AuthorOverrideSerializer(data={
-        "first_name": "Joe",
-        "last_name": "Soap",
-        "profile_image": attachment_empty.pk
-    })
+    serializer = AuthorOverrideSerializer(
+        data={"first_name": "Joe", "last_name": "Soap", "profile_image": attachment_empty.pk}
+    )
     assert serializer.is_valid()
     serializer.save()
     assert serializer.fields["image"].read_only

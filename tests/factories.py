@@ -19,10 +19,10 @@ class UserFactory(factory.django.DjangoModelFactory):
 class AttachmentFileTypeFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = models.FileType
-        django_get_or_create = ('code', )
+        django_get_or_create = ("code",)
 
     code = fuzzy.FuzzyText()
-    name = factory.Sequence(lambda n: 'file_type_%d' % n)
+    name = factory.Sequence(lambda n: "file_type_%d" % n)
 
 
 class AttachmentFactory(factory.django.DjangoModelFactory):

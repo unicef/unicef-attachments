@@ -18,15 +18,15 @@ class FileTypeModelChoiceField(ModelChoiceField):
 class Base64FileField(serializers.FileField):
     def to_internal_value(self, data):
         if not isinstance(data, str):
-            raise serializers.ValidationError(_('Incorrect base64 format.'))
+            raise serializers.ValidationError(_("Incorrect base64 format."))
 
         try:
-            mime, encoded_data = data.replace('data:', '', 1).split(';base64,')
+            mime, encoded_data = data.replace("data:", "", 1).split(";base64,")
             extension = mimetypes.guess_extension(mime)
             content_file = ContentFile(base64.b64decode(encoded_data), name=str(uuid.uuid4()) + extension)
 
         except (ValueError, TypeError):
-            raise serializers.ValidationError(_('Incorrect base64 format.'))
+            raise serializers.ValidationError(_("Incorrect base64 format."))
 
         return content_file
 
@@ -58,7 +58,7 @@ class AttachmentSingleFileField(serializers.Field):
             return None
 
         url = value.url
-        request = self.context.get('request', None)
+        request = self.context.get("request", None)
         if request is not None:
             return request.build_absolute_uri(url)
         return url
@@ -77,7 +77,7 @@ class CurrentIPDefault:
     requires_context = True
 
     def __call__(self, serializer_field):
-        return get_client_ip(serializer_field.context['request'])
+        return get_client_ip(serializer_field.context["request"])
 
     def __repr__(self):
-        return '%s()' % self.__class__.__name__
+        return "%s()" % self.__class__.__name__

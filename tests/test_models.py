@@ -15,53 +15,33 @@ def test_generate_file_path(author):
         code="author-image",
     )
     file_path = models.generate_file_path(attachment, "test.pdf")
-    assert file_path == "/".join([
-        "files",
-        "sample",
-        "author",
-        attachment.code,
-        str(author.pk),
-        "test.pdf"
-    ])
+    assert file_path == "/".join(["files", "sample", "author", attachment.code, str(author.pk), "test.pdf"])
 
 
 def test_generate_file_path_no_content_type():
     attachment = AttachmentFactory()
     file_path = models.generate_file_path(attachment, "test.pdf")
-    assert file_path == "/".join([
-        "files",
-        "unknown",
-        "tmp",
-        "test.pdf"
-    ])
+    assert file_path == "/".join(["files", "unknown", "tmp", "test.pdf"])
 
 
 def test_file_type_str():
-    instance = AttachmentFileTypeFactory(label='xyz')
-    assert u'xyz' in str(instance)
+    instance = AttachmentFileTypeFactory(label="xyz")
+    assert "xyz" in str(instance)
 
-    instance = AttachmentFileTypeFactory(label='R\xe4dda Barnen')
-    assert 'R\xe4dda Barnen' in str(instance)
+    instance = AttachmentFileTypeFactory(label="R\xe4dda Barnen")
+    assert "R\xe4dda Barnen" in str(instance)
 
 
 def test_attachment_str(author):
     instance = AttachmentFactory(
-        file=SimpleUploadedFile(
-            'simple_file.txt',
-            b'these are the file contents!'
-        ),
-        content_object=author
+        file=SimpleUploadedFile("simple_file.txt", b"these are the file contents!"), content_object=author
     )
-    assert 'simple_file' in str(instance)
+    assert "simple_file" in str(instance)
 
     instance = AttachmentFactory(
-        file=SimpleUploadedFile(
-            'simple_file.txt',
-            u'R\xe4dda Barnen'.encode('utf-8')
-        ),
-        content_object=author
+        file=SimpleUploadedFile("simple_file.txt", "R\xe4dda Barnen".encode("utf-8")), content_object=author
     )
-    assert 'simple_file' in str(instance)
+    assert "simple_file" in str(instance)
 
 
 def test_attachment_filename(author):
@@ -70,21 +50,15 @@ def test_attachment_filename(author):
 
 
 def test_attachment_filename_hyperlink(author):
-    instance = AttachmentFactory(
-        hyperlink="http://example.com/test_file.txt",
-        content_object=author
-    )
+    instance = AttachmentFactory(hyperlink="http://example.com/test_file.txt", content_object=author)
     assert instance.filename == "test_file.txt"
 
 
 def test_attachment_valid_file(author):
     valid_file_attachment = AttachmentFactory(
         # Note: file content is intended to be a byte-string here.
-        file=SimpleUploadedFile(
-            'simple_file.txt',
-            b'these are the file contents!'
-        ),
-        content_object=author
+        file=SimpleUploadedFile("simple_file.txt", b"these are the file contents!"),
+        content_object=author,
     )
     valid_file_attachment.clean()
     assert valid_file_attachment.file is not None
@@ -92,10 +66,7 @@ def test_attachment_valid_file(author):
 
 
 def test_attachment_valid_hyperlink(author):
-    valid_hyperlink_attachment = AttachmentFactory(
-        hyperlink='http://example.com/test_file.txt',
-        content_object=author
-    )
+    valid_hyperlink_attachment = AttachmentFactory(hyperlink="http://example.com/test_file.txt", content_object=author)
     valid_hyperlink_attachment.clean()
     assert valid_hyperlink_attachment.hyperlink is not None
     assert valid_hyperlink_attachment.url == valid_hyperlink_attachment.hyperlink
@@ -109,11 +80,7 @@ def test_attachment_invalid(author):
 
 def test_attachment_flat_str(author):
     attachment = AttachmentFactory(
-        file=SimpleUploadedFile(
-            'simple_file.txt',
-            u'R\xe4dda Barnen'.encode('utf-8')
-        ),
-        content_object=author
+        file=SimpleUploadedFile("simple_file.txt", "R\xe4dda Barnen".encode("utf-8")), content_object=author
     )
     flat_qs = models.AttachmentFlat.objects.filter(attachment=attachment)
     assert flat_qs.exists()
@@ -127,17 +94,17 @@ def test_attachment_list_str(attachment_link):
 
 def test_file_type_group_by():
     file_type_1 = AttachmentFileTypeFactory(
-        label='ft1',
+        label="ft1",
         code="a",
         group=["group1", "group2"],
     )
     file_type_2 = AttachmentFileTypeFactory(
-        label='ft2',
+        label="ft2",
         code="b",
         group=["group1"],
     )
     file_type_3 = AttachmentFileTypeFactory(
-        label='ft3',
+        label="ft3",
         code="c",
         group=["group3"],
     )

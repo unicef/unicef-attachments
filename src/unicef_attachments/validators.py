@@ -22,12 +22,10 @@ class SafeFileValidator:
     def __call__(self, value):
         errors = []
         data_file = value.file
-        uploaded_content_type = getattr(data_file, 'content_type', '')
+        uploaded_content_type = getattr(data_file, "content_type", "")
 
         mg = magic.Magic(mime=True)
-        content_type_magic = mg.from_buffer(
-            data_file.read(self.mime_lookup_length)
-        )
+        content_type_magic = mg.from_buffer(data_file.read(self.mime_lookup_length))
         data_file.seek(0)
 
         # Prefer mime-type from magic over mime-type from http header
@@ -35,8 +33,6 @@ class SafeFileValidator:
             uploaded_content_type = content_type_magic
 
         if uploaded_content_type in self.invalid_content_types:
-            errors.append(
-                _(f'Unsupported file type: {content_type_magic}.')
-            )
+            errors.append(_(f"Unsupported file type: {content_type_magic}."))
         if errors:
             raise forms.ValidationError(errors)

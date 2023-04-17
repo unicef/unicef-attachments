@@ -46,10 +46,7 @@ def test_attachment_list_get_hyperlink(client, attachment_uri, user):
 
 def test_attachment_list_filter(client, attachment, user):
     client.force_login(user)
-    response = client.get("{}?filename={}".format(
-        reverse("attachments:list"),
-        attachment.filename
-    ))
+    response = client.get("{}?filename={}".format(reverse("attachments:list"), attachment.filename))
     assert response.status_code == status.HTTP_200_OK
     data = response.json()
     assert len(data) == 1
@@ -58,9 +55,11 @@ def test_attachment_list_filter(client, attachment, user):
 
 def test_attachment_list_filter_not_found(client, attachment, user):
     client.force_login(user)
-    response = client.get("{}?filename=wrong".format(
-        reverse("attachments:list"),
-    ))
+    response = client.get(
+        "{}?filename=wrong".format(
+            reverse("attachments:list"),
+        )
+    )
     assert response.status_code == status.HTTP_200_OK
     data = response.json()
     assert len(data) == 0
@@ -75,9 +74,7 @@ def test_attachment_file_not_found(client, user):
 
 def test_attachment_file_no_url(client, attachment_blank, user):
     client.force_login(user)
-    response = client.get(
-        reverse("attachments:file", args=[attachment_blank.pk])
-    )
+    response = client.get(reverse("attachments:file", args=[attachment_blank.pk]))
     assert response.status_code == status.HTTP_404_NOT_FOUND
     assert b"Attachment has no file or hyperlink" in response.content
 
@@ -89,49 +86,33 @@ def test_attachment_file_redirect(client, attachment, user):
 
 
 def test_attachment_create_forbidden(client, upload_file, headers):
-    response = client.get(
-        reverse("attachments:create"),
-        data={"file": upload_file},
-        **headers
-    )
+    response = client.get(reverse("attachments:create"), data={"file": upload_file}, **headers)
     assert response.status_code == status.HTTP_403_FORBIDDEN
 
 
 def test_attachment_create_get(client, upload_file, user, headers):
     client.force_login(user)
-    response = client.get(
-        reverse("attachments:create"),
-        data={"file": upload_file},
-        **headers
-    )
+    response = client.get(reverse("attachments:create"), data={"file": upload_file}, **headers)
     assert response.status_code == status.HTTP_405_METHOD_NOT_ALLOWED
 
 
 def test_attachment_create_put(client, upload_file, user, headers):
     client.force_login(user)
-    response = client.put(
-        reverse("attachments:create"),
-        data={"file": upload_file},
-        **headers
-    )
+    response = client.put(reverse("attachments:create"), data={"file": upload_file}, **headers)
     assert response.status_code == status.HTTP_405_METHOD_NOT_ALLOWED
 
 
 def test_attachment_create_patch(client, upload_file, user, headers):
     client.force_login(user)
-    response = client.patch(
-        reverse("attachments:create"),
-        data={"file": upload_file},
-        **headers
-    )
+    response = client.patch(reverse("attachments:create"), data={"file": upload_file}, **headers)
     assert response.status_code == status.HTTP_405_METHOD_NOT_ALLOWED
 
 
 def test_attachment_create_post_invalid_type(
-        client,
-        upload_file,
-        user,
-        headers,
+    client,
+    upload_file,
+    user,
+    headers,
 ):
     client.force_login(user)
     attachment_qs = Attachment.objects
@@ -139,29 +120,19 @@ def test_attachment_create_post_invalid_type(
     mock_magic = Mock()
     mock_magic.from_buffer.return_value = "text/x-python"
     with patch(
-            "unicef_attachments.validators.magic.Magic",
-            Mock(return_value=mock_magic),
+        "unicef_attachments.validators.magic.Magic",
+        Mock(return_value=mock_magic),
     ):
-        response = client.post(
-            reverse("attachments:create"),
-            data={"file": upload_file},
-            **headers
-        )
+        response = client.post(reverse("attachments:create"), data={"file": upload_file}, **headers)
     assert response.status_code == status.HTTP_400_BAD_REQUEST
-    assert response.json() == {"file": [
-        "Unsupported file type: text/x-python."
-    ]}
+    assert response.json() == {"file": ["Unsupported file type: text/x-python."]}
 
 
 def test_attachment_create_post(client, upload_file, user, headers):
     client.force_login(user)
     attachment_qs = Attachment.objects
     assert not attachment_qs.exists()
-    response = client.post(
-        reverse("attachments:create"),
-        data={"file": upload_file},
-        **headers
-    )
+    response = client.post(reverse("attachments:create"), data={"file": upload_file}, **headers)
     assert response.status_code == status.HTTP_200_OK
     data = response.json()
     assert data["file_link"]
@@ -203,22 +174,14 @@ def test_attachment_single_file_field_no_value(client, author, user):
 def test_attachment_link_empty(client, book, user):
     client.force_login(user)
     content_type = ContentType.objects.get_for_model(book)
-    response = client.get(reverse("attachments:link", args=[
-        content_type.app_label,
-        content_type.model,
-        book.pk
-    ]))
+    response = client.get(reverse("attachments:link", args=[content_type.app_label, content_type.model, book.pk]))
     assert response.status_code == status.HTTP_200_OK
     assert response.json() == []
 
 
 def test_attachment_link_empty_no_found_content_type(client, book, user):
     client.force_login(user)
-    response = client.get(reverse("attachments:link", args=[
-        "sample",
-        "wrong",
-        book.pk
-    ]))
+    response = client.get(reverse("attachments:link", args=["sample", "wrong", book.pk]))
     assert response.status_code == status.HTTP_404_NOT_FOUND
 
 
@@ -226,11 +189,7 @@ def test_attachment_link_list(client, book, attachment_link, user):
     client.force_login(user)
     content_type = ContentType.objects.get_for_model(book)
     assert attachment_link.content_object == book
-    response = client.get(reverse("attachments:link", args=[
-        content_type.app_label,
-        content_type.model,
-        book.pk
-    ]))
+    response = client.get(reverse("attachments:link", args=[content_type.app_label, content_type.model, book.pk]))
     assert response.status_code == status.HTTP_200_OK
     data = response.json()
     assert len(data) == 1
@@ -247,12 +206,8 @@ def test_attachment_link_add(client, attachment, book, user):
     )
     assert not attachment_link_qs.exists()
     response = client.post(
-        reverse("attachments:link", args=[
-            content_type.app_label,
-            content_type.model,
-            book.pk
-        ]),
-        data={"attachment": attachment.pk}
+        reverse("attachments:link", args=[content_type.app_label, content_type.model, book.pk]),
+        data={"attachment": attachment.pk},
     )
     assert response.status_code == status.HTTP_201_CREATED
     assert attachment_link_qs.exists()
