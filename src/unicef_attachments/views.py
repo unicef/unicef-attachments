@@ -84,16 +84,12 @@ class AttachmentFileView(RetrieveAPIView):
     queryset = Attachment.objects.all()
     permission_classes = (get_attachment_permissions(),)
 
-    def get_object(self):
-        attachment = super().get_object()
-
-        if not attachment.file and not attachment.hyperlink:
-            return HttpResponseNotFound(_("Attachment has no file or hyperlink"))
-
-        return attachment
-
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
+
+        if not instance.file and not instance.hyperlink:
+            return HttpResponseNotFound(_("Attachment has no file or hyperlink"))
+
         url = urljoin("https://{}".format(self.request.get_host()), instance.url)
         return HttpResponseRedirect(url)
 
