@@ -86,14 +86,14 @@ class AbsoluteUrlField(serializers.CharField):
     """
 
     def __init__(self, *args, **kwargs):
-        kwargs.setdefault('read_only', True)
+        kwargs.setdefault("read_only", True)
         super().__init__(*args, **kwargs)
 
     def to_representation(self, value):
         if not value:
             return value
 
-        request = self.context.get('request', None)
+        request = self.context.get("request", None)
         if request is None:
             return value
 
@@ -105,6 +105,7 @@ class PermittedAttachmentField(SeparatedReadWriteField):
     split read and write source. write file/hyperlink; read file_link if value provided
     return file_link instead of original field value to enforce download file view permissions
     """
+
     def get_attribute(self, instance):
         value = get_attribute(instance, self.source_attrs)
         if not value:
