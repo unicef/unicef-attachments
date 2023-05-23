@@ -20,9 +20,7 @@ class AuthorBaseSerializer(serializers.ModelSerializer):
 
 
 class AuthorFileTypeSerializer(AuthorBaseSerializer):
-    file_type = FileTypeModelChoiceField(
-        queryset=FileType.objects.filter(code='author_profile_image')
-    )
+    file_type = FileTypeModelChoiceField(queryset=FileType.objects.filter(code="author_profile_image"))
 
 
 class AuthorSerializer(AttachmentSerializerMixin, AuthorBaseSerializer):

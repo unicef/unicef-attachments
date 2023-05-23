@@ -10,8 +10,8 @@ class Author(models.Model):
     image = models.FileField(null=True, blank=True)
     profile_image = CodedGenericRelation(
         Attachment,
-        verbose_name='Profile Image',
-        code='author_profile_image',
+        verbose_name="Profile Image",
+        code="author_profile_image",
         blank=True,
         null=True,
     )

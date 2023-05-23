@@ -37,25 +37,20 @@ def file_type():
 
 @pytest.fixture
 def base64_file():
-    file_content = 'these are the file contents!'.encode('utf-8')
-    return 'data:text/plain;base64,{}'.format(base64.b64encode(file_content))
+    file_content = "these are the file contents!".encode("utf-8")
+    return "data:text/plain;base64,{}".format(base64.b64encode(file_content))
 
 
 @pytest.fixture
 def upload_file():
-    return SimpleUploadedFile(
-        'hello_world.txt',
-        u'hello world!'.encode('utf-8')
-    )
+    return SimpleUploadedFile("hello_world.txt", "hello world!".encode("utf-8"))
 
 
 @pytest.fixture()
 def headers(upload_file):
     return {
         "HTTP_CONTENT_TYPE": "multipart/form-data",
-        "HTTP_CONTENT_DISPOSITION": "attachment; filename={}".format(
-            upload_file.name
-        )
+        "HTTP_CONTENT_DISPOSITION": "attachment; filename={}".format(upload_file.name),
     }
 
 
@@ -95,9 +90,7 @@ def attachment_blank(file_type, author):
 
 @pytest.fixture
 def attachment_empty():
-    return factories.AttachmentFactory(
-        file="blank.pdf"
-    )
+    return factories.AttachmentFactory(file="blank.pdf")
 
 
 @pytest.fixture

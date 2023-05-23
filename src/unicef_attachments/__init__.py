@@ -1,3 +1,3 @@
-NAME = 'unicef_attachments'
+NAME = "unicef_attachments"
 VERSION = __version__ = "0.12"
-__author__ = 'UNICEF'
+__author__ = "UNICEF"
