@@ -136,7 +136,10 @@ class Attachment(TimeStampedModel):
 
     @property
     def file_link(self):
-        return reverse("attachments:file", args=[self.pk])
+        if not self.filename:
+            return reverse("attachments:file", args=[self.pk])
+
+        return reverse("attachments:file_full", args=[self.pk, self.filename])
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)

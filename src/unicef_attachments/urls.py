@@ -8,6 +8,11 @@ urlpatterns = (
     re_path(r"^$", view=views.AttachmentListView.as_view(), name="list"),
     re_path(r"^file/(?P<pk>\d+)/$", view=views.AttachmentFileView.as_view(), name="file"),
     re_path(
+        r'^file/(?P<pk>\d+)/(?P<filename>.+)$',
+        view=views.AttachmentFileView.as_view(),
+        name='file_full'
+    ),
+    re_path(
         r"^links/(?P<app>[\w\.]+)/(?P<model>\w+)/(?P<object_pk>\d+)/$",
         view=views.AttachmentLinkListCreateView.as_view(),
         name="link",
