@@ -89,9 +89,7 @@ class AttachmentFileView(RetrieveAPIView):
             attachment = self.get_object()
         except Http404:
             # backwards compatibility with existing interface
-            return HttpResponseNotFound(
-                _("No Attachment matches the given query.")
-            )
+            return HttpResponseNotFound(_("No Attachment matches the given query."))
 
         if not attachment.file and not attachment.hyperlink:
             return HttpResponseNotFound(_("Attachment has no file or hyperlink"))
