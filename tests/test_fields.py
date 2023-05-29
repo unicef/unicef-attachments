@@ -79,7 +79,7 @@ def test_attachment_single_file_field_attachment(file_type, upload_file):
         code=file_type.code,
         file=upload_file,
     )
-    assert field.get_attribute(file_type) == attachment.file
+    assert field.get_attribute(file_type) == attachment
 
 
 def test_attachment_single_file_field_last_attachment(file_type, upload_file):
@@ -96,4 +96,4 @@ def test_attachment_single_file_field_last_attachment(file_type, upload_file):
         code=file_type.code,
         file=upload_file,
     )
-    assert field.get_attribute(file_type) == attachment.file
+    assert field.get_attribute(file_type) == attachment
