@@ -55,6 +55,9 @@ class AttachmentSingleFileField(serializers.Field):
             return None
 
         url = value.file_link
+        if not url:
+            return None
+
         request = self.context.get("request", None)
         if request is not None:
             return request.build_absolute_uri(url)

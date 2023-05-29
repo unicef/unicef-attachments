@@ -136,6 +136,9 @@ class Attachment(TimeStampedModel):
 
     @property
     def file_link(self):
+        if not self.filename and not self.hyperlink:
+            return ""
+
         if not self.filename:
             return reverse("attachments:file", args=[self.pk])
 

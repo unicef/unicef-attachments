@@ -3,7 +3,7 @@ from urllib.parse import urljoin
 from django.contrib.contenttypes.models import ContentType
 from django.db import transaction
 from django.db.models import Q
-from django.http import HttpResponseNotFound, HttpResponseRedirect
+from django.http import Http404, HttpResponseNotFound, HttpResponseRedirect
 from django.utils.translation import gettext as _
 from drf_querystringfilter.backend import QueryStringFilterBackend
 from rest_framework.exceptions import NotFound
@@ -85,12 +85,18 @@ class AttachmentFileView(RetrieveAPIView):
     permission_classes = (get_attachment_permissions(),)
 
     def retrieve(self, request, *args, **kwargs):
-        instance = self.get_object()
+        try:
+            attachment = self.get_object()
+        except Http404:
+            # backwards compatibility with existing interface
+            return HttpResponseNotFound(
+                _("No Attachment matches the given query.")
+            )
 
-        if not instance.file and not instance.hyperlink:
+        if not attachment.file and not attachment.hyperlink:
             return HttpResponseNotFound(_("Attachment has no file or hyperlink"))
 
-        url = urljoin("https://{}".format(self.request.get_host()), instance.url)
+        url = urljoin("https://{}".format(self.request.get_host()), attachment.url)
         return HttpResponseRedirect(url)
 
 
