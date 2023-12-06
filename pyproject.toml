@@ -18,8 +18,8 @@ classifiers = [
     "Framework :: Django :: 4.2",
     "Framework :: Django :: 5.0",
     "Intended Audience :: Developers",
-    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
 ]
 dependencies = [
     "django",
@@ -30,6 +30,7 @@ dependencies = [
     "python-magic",
     "pytz",
     "unicef-restlib",
+    "setuptools"  # temporary for python 3.12
 ]
 
 [project.optional-dependencies]
