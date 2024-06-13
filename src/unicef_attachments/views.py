@@ -3,12 +3,18 @@ from urllib.parse import urljoin
 from django.contrib.contenttypes.models import ContentType
 from django.db import transaction
 from django.db.models import Q
-from django.http import HttpResponseNotFound, HttpResponseRedirect
+from django.http import Http404, HttpResponseNotFound, HttpResponseRedirect
 from django.utils.translation import gettext as _
-from django.views.generic.detail import DetailView
 from drf_querystringfilter.backend import QueryStringFilterBackend
 from rest_framework.exceptions import NotFound
-from rest_framework.generics import CreateAPIView, DestroyAPIView, ListAPIView, ListCreateAPIView, UpdateAPIView
+from rest_framework.generics import (
+    CreateAPIView,
+    DestroyAPIView,
+    ListAPIView,
+    ListCreateAPIView,
+    RetrieveAPIView,
+    UpdateAPIView,
+)
 from rest_framework.parsers import FormParser, MultiPartParser
 from rest_framework.response import Response
 
@@ -74,16 +80,20 @@ class AttachmentLinkDeleteView(DestroyAPIView):
     serializer_class = AttachmentLinkSerializer
 
 
-class AttachmentFileView(DetailView):
-    model = Attachment
+class AttachmentFileView(RetrieveAPIView):
+    queryset = Attachment.objects.all()
+    permission_classes = (get_attachment_permissions(),)
 
-    def get(self, *args, **kwargs):
+    def retrieve(self, request, *args, **kwargs):
         try:
-            attachment = Attachment.objects.get(pk=kwargs["pk"])
-        except Attachment.DoesNotExist:
+            attachment = self.get_object()
+        except Http404:
+            # backwards compatibility with existing interface
             return HttpResponseNotFound(_("No Attachment matches the given query."))
-        if not attachment or (not attachment.file and not attachment.hyperlink):
+
+        if not attachment.file and not attachment.hyperlink:
             return HttpResponseNotFound(_("Attachment has no file or hyperlink"))
+
         url = urljoin("https://{}".format(self.request.get_host()), attachment.url)
         return HttpResponseRedirect(url)
 
