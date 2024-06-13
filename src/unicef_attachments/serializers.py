@@ -7,7 +7,13 @@ from rest_framework.exceptions import ValidationError
 from unicef_restlib.fields import SeparatedReadWriteField
 from unicef_restlib.serializers import UserContextSerializerMixin
 
-from unicef_attachments.fields import AttachmentSingleFileField, Base64FileField, CurrentIPDefault
+from unicef_attachments.fields import (
+    AbsoluteUrlField,
+    AttachmentSingleFileField,
+    Base64FileField,
+    CurrentIPDefault,
+    PermittedAttachmentField,
+)
 from unicef_attachments.models import Attachment, AttachmentLink, FileType
 from unicef_attachments.utils import get_attachment_flat_model
 from unicef_attachments.validators import SafeFileValidator
@@ -17,33 +23,37 @@ class SimpleUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = get_user_model()
         fields = (
-            'id',
-            'username',
-            'email',
-            'is_superuser',
-            'first_name',
-            'last_name',
-            'is_staff',
-            'is_active',
+            "id",
+            "username",
+            "email",
+            "is_superuser",
+            "first_name",
+            "last_name",
+            "is_staff",
+            "is_active",
         )
 
 
 class BaseAttachmentSerializer(UserContextSerializerMixin, serializers.ModelSerializer):
     uploaded_by = SeparatedReadWriteField(
         write_field=serializers.HiddenField(default=serializers.CurrentUserDefault()),
-        read_field=SimpleUserSerializer(label=_('Uploaded By')),
+        read_field=SimpleUserSerializer(label=_("Uploaded By")),
     )
     ip_address = SeparatedReadWriteField(
         write_field=serializers.HiddenField(default=CurrentIPDefault()),
-        read_field=serializers.ReadOnlyField(label=_('IP Address')),
+        read_field=serializers.ReadOnlyField(label=_("IP Address")),
     )
+    # both file and hyperlink are editable yet wrapped with file_link attribute,
+    #  so it's not possible to extract direct url to bypass permissions
+    file = PermittedAttachmentField(read_field=AbsoluteUrlField())
+    hyperlink = PermittedAttachmentField(read_field=AbsoluteUrlField())
 
     def _validate_attachment(self, validated_data, instance=None):
-        file_attachment = validated_data.get('file', None) or (instance.file if instance else None)
-        hyperlink = validated_data.get('hyperlink', None) or (instance.hyperlink if instance else None)
+        file_attachment = validated_data.get("file", None) or (instance.file if instance else None)
+        hyperlink = validated_data.get("hyperlink", None) or (instance.hyperlink if instance else None)
 
         if bool(file_attachment) == bool(hyperlink):
-            raise ValidationError(_('Please provide file or hyperlink.'))
+            raise ValidationError(_("Please provide file or hyperlink."))
 
     def create(self, validated_data):
         self._validate_attachment(validated_data)
@@ -56,37 +66,39 @@ class BaseAttachmentSerializer(UserContextSerializerMixin, serializers.ModelSeri
     class Meta:
         model = Attachment
         fields = [
-            'id',
-            'file_type',
-            'file',
-            'hyperlink',
-            'created',
-            'modified',
-            'uploaded_by',
-            'ip_address',
-            'filename',
+            "id",
+            "file_type",
+            "file",
+            "hyperlink",
+            "created",
+            "modified",
+            "uploaded_by",
+            "ip_address",
+            "filename",
         ]
         extra_kwargs = {
-            'created': {
-                'label': _('Date Uploaded'),
+            "created": {
+                "label": _("Date Uploaded"),
             },
-            'filename': {'read_only': True},
+            "filename": {"read_only": True},
         }
 
 
 class Base64AttachmentSerializer(BaseAttachmentSerializer):
-    file = Base64FileField(required=False, label=_('File Attachment'))
+    file = Base64FileField(required=False, label=_("File Attachment"))
     file_name = serializers.CharField(write_only=True, required=False)
 
     def validate(self, attrs):
         data = super().validate(attrs)
-        file_name = data.pop('file_name', None)
-        if 'file' in data and file_name:
-            data['file'].name = file_name
+        file_name = data.pop("file_name", None)
+        if "file" in data and file_name:
+            data["file"].name = file_name
         return data
 
     class Meta(BaseAttachmentSerializer.Meta):
-        fields = BaseAttachmentSerializer.Meta.fields + ['file_name', ]
+        fields = BaseAttachmentSerializer.Meta.fields + [
+            "file_name",
+        ]
 
 
 class AttachmentFlatSerializer(serializers.ModelSerializer):
@@ -107,15 +119,8 @@ class AttachmentLinkSerializer(serializers.ModelSerializer):
         read_only=True,
     )
     url = serializers.CharField(source="attachment.url", read_only=True)
-    file_type = serializers.CharField(
-        source="attachment.file_type.label",
-        read_only=True
-    )
-    created = serializers.DateTimeField(
-        source="attachment.created",
-        format="%d %b %Y",
-        read_only=True
-    )
+    file_type = serializers.CharField(source="attachment.file_type.label", read_only=True)
+    created = serializers.DateTimeField(source="attachment.created", format="%d %b %Y", read_only=True)
 
     class Meta:
         model = AttachmentLink
@@ -171,11 +176,7 @@ def validate_attachment(cls, data):
             # If content object exists, expect instance to exist
             # as we're not able to re-purpose the attachment
             # Make sure content object matches instance
-            raise serializers.ValidationError(
-                "Attachment is already associated: {}".format(
-                    attachment.content_object
-                )
-            )
+            raise serializers.ValidationError("Attachment is already associated: {}".format(attachment.content_object))
 
     attachment.code = code
     try:
@@ -222,14 +223,10 @@ class AttachmentSerializerMixin:
                         if field.override in self.fields:
                             self.fields[field.override].read_only = True
                     # ignore values that are None
-                    if self.initial_data[field_name] is None or self.initial_data[field_name] == 'None':
+                    if self.initial_data[field_name] is None or self.initial_data[field_name] == "None":
                         self.initial_data.pop(field_name)
                     else:
-                        setattr(
-                            self,
-                            "validate_{}".format(field_name),
-                            types.MethodType(validate_attachment, self)
-                        )
+                        setattr(self, "validate_{}".format(field_name), types.MethodType(validate_attachment, self))
                         self.attachment_list.append(field.source)
                 else:
                     setattr(field, "read_only", True)
@@ -243,9 +240,7 @@ class AttachmentSerializerMixin:
         """
         attachments_to_save = []
         for attachment_attr in self.attachment_list:
-            attachments_to_save.append(
-                self.validated_data.pop(attachment_attr)
-            )
+            attachments_to_save.append(self.validated_data.pop(attachment_attr))
         response = super().save(*args, **kwargs)
         for attachment in attachments_to_save:
             if attachment.content_object is None:
@@ -255,11 +250,14 @@ class AttachmentSerializerMixin:
 
 
 class AttachmentPDFSerializer(serializers.ModelSerializer):
-    file_type_display = serializers.ReadOnlyField(source='file_type.label')
-    created = serializers.DateTimeField(format='%d %b %Y')
+    file_type_display = serializers.ReadOnlyField(source="file_type.label")
+    created = serializers.DateTimeField(format="%d %b %Y")
 
     class Meta:
         model = Attachment
         fields = [
-            'file_type_display', 'filename', 'url', 'created',
+            "file_type_display",
+            "filename",
+            "url",
+            "created",
         ]

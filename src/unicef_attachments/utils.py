@@ -13,15 +13,14 @@ def get_filepath_prefix_func():
     try:
         dotted_path = settings.ATTACHMENT_FILEPATH_PREFIX_FUNC
         assert dotted_path is not None
-        module, func_name = dotted_path.rsplit('.', 1)
+        module, func_name = dotted_path.rsplit(".", 1)
         module, func = smart_str(module), smart_str(func_name)
         func = getattr(__import__(module, {}, {}, [func]), func)
         return func
     except ImportError as e:
         raise ImproperlyConfigured(
-            'Could not import ATTACHMENT_FILEPATH_PREFIX_FUNC {}: {}'.format(
-                settings.ATTACHMENT_FILEPATH_PREFIX_FUNC,
-                e
+            "Could not import ATTACHMENT_FILEPATH_PREFIX_FUNC {}: {}".format(
+                settings.ATTACHMENT_FILEPATH_PREFIX_FUNC, e
             )
         )
     except (AssertionError, AttributeError):
@@ -33,6 +32,7 @@ filepath_prefix = get_filepath_prefix_func()()
 
 def _attachment_flat_model():
     from unicef_attachments.models import AttachmentFlat
+
     return AttachmentFlat
 
 
@@ -40,16 +40,13 @@ def get_attachment_flat_model():
     try:
         dotted_path = settings.ATTACHMENT_FLAT_MODEL
         assert dotted_path is not None
-        module, func_name = dotted_path.rsplit('.', 1)
+        module, func_name = dotted_path.rsplit(".", 1)
         module, func = smart_str(module), smart_str(func_name)
         func = getattr(__import__(module, {}, {}, [func]), func)
         return func
     except ImportError as e:
         raise ImproperlyConfigured(
-            'Could not import ATTACHMENT_FLAT_MODEL {}: {}'.format(
-                settings.ATTACHMENT_FLAT_MODEL,
-                e
-            )
+            "Could not import ATTACHMENT_FLAT_MODEL {}: {}".format(settings.ATTACHMENT_FLAT_MODEL, e)
         )
     except (AssertionError, AttributeError):
         return _attachment_flat_model()
@@ -57,6 +54,7 @@ def get_attachment_flat_model():
 
 def _attachment_permissions():
     from unicef_attachments.permissions import AttachmentPermissions
+
     return AttachmentPermissions
 
 
@@ -64,16 +62,13 @@ def get_attachment_permissions():
     try:
         dotted_path = settings.ATTACHMENT_PERMISSIONS
         assert dotted_path is not None
-        module, func_name = dotted_path.rsplit('.', 1)
+        module, func_name = dotted_path.rsplit(".", 1)
         module, func = smart_str(module), smart_str(func_name)
         func = getattr(__import__(module, {}, {}, [func]), func)
         return func
     except ImportError as e:
         raise ImproperlyConfigured(
-            'Could not import ATTACHMENT_PERMISSIONS {}: {}'.format(
-                settings.ATTACHMENT_PERMISSIONS,
-                e
-            )
+            "Could not import ATTACHMENT_PERMISSIONS {}: {}".format(settings.ATTACHMENT_PERMISSIONS, e)
         )
     except (AssertionError, AttributeError):
         return _attachment_permissions()
@@ -105,7 +100,7 @@ def denormalize_attachment(attachment):
             "uploaded_by": uploaded_by,
             "ip_address": attachment.ip_address,
             "created": attachment.created.strftime("%d %b %Y"),
-        }
+        },
     )
     return flat
 
@@ -114,16 +109,13 @@ def get_denormalize_func():
     try:
         dotted_path = settings.ATTACHMENT_DENORMALIZE_FUNC
         assert dotted_path is not None
-        module, func_name = dotted_path.rsplit('.', 1)
+        module, func_name = dotted_path.rsplit(".", 1)
         module, func = smart_str(module), smart_str(func_name)
         func = getattr(__import__(module, {}, {}, [func]), func)
         return func
     except ImportError as e:
         raise ImproperlyConfigured(
-            'Could not import ATTACHMENT_DENORMALIZE_FUNC {}: {}'.format(
-                settings.ATTACHMENT_DENORMALIZE_FUNC,
-                e
-            )
+            "Could not import ATTACHMENT_DENORMALIZE_FUNC {}: {}".format(settings.ATTACHMENT_DENORMALIZE_FUNC, e)
         )
     except (AssertionError, AttributeError):
         return denormalize_attachment
@@ -169,9 +161,9 @@ def cleanup_filetypes():
 
 
 def get_client_ip(request):
-    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+    x_forwarded_for = request.META.get("HTTP_X_FORWARDED_FOR")
     if x_forwarded_for:
-        ip = x_forwarded_for.split(',')[0]
+        ip = x_forwarded_for.split(",")[0]
     else:
-        ip = request.META.get('REMOTE_ADDR')
+        ip = request.META.get("REMOTE_ADDR")
     return ip

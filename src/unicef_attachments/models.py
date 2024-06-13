@@ -37,7 +37,7 @@ def generate_file_path(attachment, filename):
     file_path.append(os.path.split(filename)[-1])
     # strip all '/'
     file_path = [str(x).strip("/") for x in file_path if x]
-    return '/'.join(file_path)
+    return "/".join(file_path)
 
 
 class FileTypeQueryset(OrderedModelQuerySet):
@@ -56,9 +56,9 @@ class FileTypeManager(OrderedModelManager):
 
 
 class FileType(OrderedModel, models.Model):
-    name = models.CharField(max_length=64, verbose_name=_('Name'))
-    label = models.CharField(max_length=64, verbose_name=_('Label'))
-    code = models.CharField(max_length=64, default="", verbose_name=_('Code'))
+    name = models.CharField(max_length=64, verbose_name=_("Name"))
+    label = models.CharField(max_length=64, verbose_name=_("Label"))
+    code = models.CharField(max_length=64, default="", verbose_name=_("Code"))
     group = ArrayField(models.CharField(max_length=64, blank=True), null=True)
 
     objects = FileTypeManager()
@@ -67,14 +67,17 @@ class FileType(OrderedModel, models.Model):
         return self.label
 
     class Meta:
-        unique_together = ("name", "code", )
-        ordering = ('code', 'order')
+        unique_together = (
+            "name",
+            "code",
+        )
+        ordering = ("code", "order")
 
 
 class Attachment(TimeStampedModel):
     file_type = models.ForeignKey(
         FileType,
-        verbose_name=_('Document Type'),
+        verbose_name=_("Document Type"),
         null=True,
         on_delete=models.CASCADE,
     )
@@ -82,42 +85,35 @@ class Attachment(TimeStampedModel):
         upload_to=generate_file_path,
         blank=True,
         null=True,
-        verbose_name=_('File Attachment'),
+        verbose_name=_("File Attachment"),
         max_length=1024,
     )
-    hyperlink = models.CharField(
-        max_length=1000,
-        blank=True,
-        default="",
-        verbose_name=_('Hyperlink')
-    )
+    hyperlink = models.CharField(max_length=1000, blank=True, default="", verbose_name=_("Hyperlink"))
     content_type = models.ForeignKey(
         ContentType,
         blank=True,
         null=True,
-        verbose_name=_('Content Type'),
+        verbose_name=_("Content Type"),
         on_delete=models.CASCADE,
     )
-    object_id = models.IntegerField(
-        blank=True,
-        null=True,
-        verbose_name=_('Object ID')
-    )
+    object_id = models.IntegerField(blank=True, null=True, verbose_name=_("Object ID"))
     content_object = GenericForeignKey()
-    code = models.CharField(max_length=64, blank=True, verbose_name=_('Code'))
+    code = models.CharField(max_length=64, blank=True, verbose_name=_("Code"))
     uploaded_by = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         verbose_name=_("Uploaded By"),
-        related_name='attachments',
+        related_name="attachments",
         blank=True,
         null=True,
         on_delete=models.CASCADE,
     )
-    ip_address = models.GenericIPAddressField(default='0.0.0.0')
+    ip_address = models.GenericIPAddressField(default="0.0.0.0")
     is_active = models.BooleanField(default=True)
 
     class Meta:
-        ordering = ['id', ]
+        ordering = [
+            "id",
+        ]
 
     def __str__(self):
         return str(self.file)
@@ -125,7 +121,7 @@ class Attachment(TimeStampedModel):
     def clean(self):
         super().clean()
         if bool(self.file) == bool(self.hyperlink):
-            raise ValidationError(_('Please provide file or hyperlink.'))
+            raise ValidationError(_("Please provide file or hyperlink."))
 
     @property
     def url(self):
@@ -136,13 +132,17 @@ class Attachment(TimeStampedModel):
 
     @property
     def filename(self):
-        return os.path.basename(
-            self.file.name if self.file else urlsplit(self.hyperlink).path
-        )
+        return os.path.basename(self.file.name if self.file else urlsplit(self.hyperlink).path)
 
     @property
     def file_link(self):
-        return reverse("attachments:file", args=[self.pk])
+        if not self.filename and not self.hyperlink:
+            return ""
+
+        if not self.filename:
+            return reverse("attachments:file", args=[self.pk])
+
+        return reverse("attachments:file_full", args=[self.pk, self.filename])
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
@@ -163,14 +163,10 @@ class AttachmentLink(models.Model):
         ContentType,
         blank=True,
         null=True,
-        verbose_name=_('Content Type'),
+        verbose_name=_("Content Type"),
         on_delete=models.CASCADE,
     )
-    object_id = models.IntegerField(
-        blank=True,
-        null=True,
-        verbose_name=_('Object ID')
-    )
+    object_id = models.IntegerField(blank=True, null=True, verbose_name=_("Object ID"))
     content_object = GenericForeignKey()
 
     def __str__(self):
@@ -183,28 +179,12 @@ class AttachmentFlat(models.Model):
         on_delete=models.CASCADE,
     )
     object_link = models.URLField(blank=True, verbose_name=_("Object Link"))
-    file_type = models.CharField(
-        max_length=100,
-        blank=True,
-        verbose_name=_('File Type')
-    )
-    file_link = models.CharField(
-        max_length=1024,
-        blank=True,
-        verbose_name=_('File Link')
-    )
-    filename = models.CharField(
-        max_length=1024,
-        blank=True,
-        verbose_name=_('File Name')
-    )
-    uploaded_by = models.CharField(
-        max_length=255,
-        blank=True,
-        verbose_name=_('Uploaded by')
-    )
-    created = models.CharField(max_length=50, verbose_name=_('Created'))
-    ip_address = models.GenericIPAddressField(default='0.0.0.0')
+    file_type = models.CharField(max_length=100, blank=True, verbose_name=_("File Type"))
+    file_link = models.CharField(max_length=1024, blank=True, verbose_name=_("File Link"))
+    filename = models.CharField(max_length=1024, blank=True, verbose_name=_("File Name"))
+    uploaded_by = models.CharField(max_length=255, blank=True, verbose_name=_("Uploaded by"))
+    created = models.CharField(max_length=50, verbose_name=_("Created"))
+    ip_address = models.GenericIPAddressField(default="0.0.0.0")
 
     def __str__(self):
         return str(self.attachment)

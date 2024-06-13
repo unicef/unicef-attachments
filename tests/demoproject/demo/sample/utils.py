@@ -7,8 +7,7 @@ def filepath_prefix():
 
 def denormalize(attachment):
     flat, created = get_attachment_flat_model().objects.update_or_create(
-        attachment=attachment,
-        defaults={"object_link": get_object_link(attachment)}
+        attachment=attachment, defaults={"object_link": get_object_link(attachment)}
     )
 
     return flat

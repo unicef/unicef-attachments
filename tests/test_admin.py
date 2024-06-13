@@ -27,7 +27,7 @@ def test_attachment_inline_post(client, author, superuser, upload_file):
             "last_name": author.last_name,
             f"{form_key}-0-file": upload_file,
         },
-        follow=True
+        follow=True,
     )
     assert response.status_code == 200
     assert author.profile_image.exists()

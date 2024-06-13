@@ -1,4 +1,10 @@
-Release 0.12 
+Release 0.13 (in development)
+--------------
+* added support to django 5.0
+* removed support to python <3.11
+
+
+Release 0.12
 --------------
 * added support to django 4.1
 * add 'hidden' field to the Attachment model
