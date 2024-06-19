@@ -112,6 +112,6 @@ class PermittedAttachmentField(SeparatedReadWriteField):
     def get_attribute(self, instance):
         value = get_attribute(instance, self.source_attrs)
         if not value:
-            return ''
+            return ""
 
         return instance.file_link
