@@ -60,7 +60,7 @@ class FileType(OrderedModel, models.Model):
     label = models.CharField(max_length=64, verbose_name=_('Label'))
     code = models.CharField(max_length=64, default="", verbose_name=_('Code'))
     group = ArrayField(models.CharField(max_length=64, blank=True), null=True)
-
+    is_active = models.BooleanField(default=True, verbose_name=_("Is Active"))
     objects = FileTypeManager()
 
     def __str__(self):
