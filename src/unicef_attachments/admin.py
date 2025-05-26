@@ -7,22 +7,28 @@ from unicef_attachments import models as app_models
 
 @admin.register(app_models.FileType)
 class FileTypeAdmin(OrderedModelAdmin):
-    list_display = ['label', 'name', 'code', 'group', 'move_up_down_links']
-    list_filter = ['code', ]
-    search_fields = ['name', 'label']
+    list_display = ["label", "name", "code", "group", "move_up_down_links"]
+    list_filter = [
+        "code",
+    ]
+    search_fields = ["name", "label"]
 
 
 @admin.register(app_models.Attachment)
 class AttachmentAdmin(admin.ModelAdmin):
     list_display = [
-        'file_type',
-        'file',
-        'modified',
-        'uploaded_by',
-        'ip_address',
+        "file_type",
+        "file",
+        "modified",
+        "uploaded_by",
+        "ip_address",
     ]
-    list_filter = ['file_type', ]
-    raw_id_fields = ['uploaded_by', ]
+    list_filter = [
+        "file_type",
+    ]
+    raw_id_fields = [
+        "uploaded_by",
+    ]
 
 
 class AttachmentInlineAdminMixin:
@@ -36,8 +42,16 @@ class AttachmentInlineAdminMixin:
 class AttachmentInline(ct_admin.GenericTabularInline):
     model = app_models.Attachment
     extra = 0
-    fields = ('file', 'hyperlink', 'modified', 'uploaded_by', )
-    readonly_fields = ('modified', 'uploaded_by', )
+    fields = (
+        "file",
+        "hyperlink",
+        "modified",
+        "uploaded_by",
+    )
+    readonly_fields = (
+        "modified",
+        "uploaded_by",
+    )
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)

@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('unicef_attachments', '0007_alter_attachment_hyperlink'),
+        ("unicef_attachments", "0007_alter_attachment_hyperlink"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='attachment',
-            name='is_active',
+            model_name="attachment",
+            name="is_active",
             field=models.BooleanField(default=True),
         ),
     ]

@@ -7,18 +7,47 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('contenttypes', '0002_remove_content_type_name'),
-        ('unicef_attachments', '0001_initial'),
+        ("contenttypes", "0002_remove_content_type_name"),
+        ("unicef_attachments", "0001_initial"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='AttachmentLink',
+            name="AttachmentLink",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('object_id', models.IntegerField(blank=True, null=True, verbose_name='Object ID')),
-                ('attachment', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='links', to='unicef_attachments.Attachment')),
-                ('content_type', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='contenttypes.ContentType', verbose_name='Content Type')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "object_id",
+                    models.IntegerField(
+                        blank=True, null=True, verbose_name="Object ID"
+                    ),
+                ),
+                (
+                    "attachment",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="links",
+                        to="unicef_attachments.Attachment",
+                    ),
+                ),
+                (
+                    "content_type",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="contenttypes.ContentType",
+                        verbose_name="Content Type",
+                    ),
+                ),
             ],
         ),
     ]

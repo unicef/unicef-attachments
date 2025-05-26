@@ -7,13 +7,17 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('unicef_attachments', '0003_auto_20190227_1332'),
+        ("unicef_attachments", "0003_auto_20190227_1332"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='filetype',
-            name='group',
-            field=django.contrib.postgres.fields.ArrayField(base_field=models.CharField(blank=True, max_length=64), null=True, size=None),
+            model_name="filetype",
+            name="group",
+            field=django.contrib.postgres.fields.ArrayField(
+                base_field=models.CharField(blank=True, max_length=64),
+                null=True,
+                size=None,
+            ),
         ),
     ]

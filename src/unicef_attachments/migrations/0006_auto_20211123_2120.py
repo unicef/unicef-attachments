@@ -6,18 +6,18 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('unicef_attachments', '0005_auto_20190705_1746'),
+        ("unicef_attachments", "0005_auto_20190705_1746"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='attachment',
-            name='ip_address',
-            field=models.GenericIPAddressField(default='0.0.0.0'),
+            model_name="attachment",
+            name="ip_address",
+            field=models.GenericIPAddressField(default="0.0.0.0"),
         ),
         migrations.AddField(
-            model_name='attachmentflat',
-            name='ip_address',
-            field=models.GenericIPAddressField(default='0.0.0.0'),
+            model_name="attachmentflat",
+            name="ip_address",
+            field=models.GenericIPAddressField(default="0.0.0.0"),
         ),
     ]

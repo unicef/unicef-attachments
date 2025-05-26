@@ -14,65 +14,178 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('contenttypes', '0002_remove_content_type_name'),
+        ("contenttypes", "0002_remove_content_type_name"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Attachment',
+            name="Attachment",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created', model_utils.fields.AutoCreatedField(default=django.utils.timezone.now, editable=False, verbose_name='created')),
-                ('modified', model_utils.fields.AutoLastModifiedField(default=django.utils.timezone.now, editable=False, verbose_name='modified')),
-                ('file', models.FileField(blank=True, max_length=1024, null=True, upload_to=unicef_attachments.models.generate_file_path, verbose_name='File Attachment')),
-                ('hyperlink', models.CharField(blank=True, default='', max_length=255, verbose_name='Hyperlink')),
-                ('object_id', models.IntegerField(blank=True, null=True, verbose_name='Object ID')),
-                ('code', models.CharField(blank=True, max_length=64, verbose_name='Code')),
-                ('content_type', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='contenttypes.ContentType', verbose_name='Content Type')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "created",
+                    model_utils.fields.AutoCreatedField(
+                        default=django.utils.timezone.now,
+                        editable=False,
+                        verbose_name="created",
+                    ),
+                ),
+                (
+                    "modified",
+                    model_utils.fields.AutoLastModifiedField(
+                        default=django.utils.timezone.now,
+                        editable=False,
+                        verbose_name="modified",
+                    ),
+                ),
+                (
+                    "file",
+                    models.FileField(
+                        blank=True,
+                        max_length=1024,
+                        null=True,
+                        upload_to=unicef_attachments.models.generate_file_path,
+                        verbose_name="File Attachment",
+                    ),
+                ),
+                (
+                    "hyperlink",
+                    models.CharField(
+                        blank=True, default="", max_length=255, verbose_name="Hyperlink"
+                    ),
+                ),
+                (
+                    "object_id",
+                    models.IntegerField(
+                        blank=True, null=True, verbose_name="Object ID"
+                    ),
+                ),
+                (
+                    "code",
+                    models.CharField(blank=True, max_length=64, verbose_name="Code"),
+                ),
+                (
+                    "content_type",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="contenttypes.ContentType",
+                        verbose_name="Content Type",
+                    ),
+                ),
             ],
             options={
-                'ordering': ['id'],
+                "ordering": ["id"],
             },
         ),
         migrations.CreateModel(
-            name='AttachmentFlat',
+            name="AttachmentFlat",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('object_link', models.URLField(blank=True, verbose_name='Object Link')),
-                ('file_type', models.CharField(blank=True, max_length=100, verbose_name='File Type')),
-                ('file_link', models.CharField(blank=True, max_length=1024, verbose_name='File Link')),
-                ('filename', models.CharField(blank=True, max_length=1024, verbose_name='File Name')),
-                ('uploaded_by', models.CharField(blank=True, max_length=255, verbose_name='Uploaded by')),
-                ('created', models.CharField(max_length=50, verbose_name='Created')),
-                ('attachment', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='unicef_attachments.Attachment')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "object_link",
+                    models.URLField(blank=True, verbose_name="Object Link"),
+                ),
+                (
+                    "file_type",
+                    models.CharField(
+                        blank=True, max_length=100, verbose_name="File Type"
+                    ),
+                ),
+                (
+                    "file_link",
+                    models.CharField(
+                        blank=True, max_length=1024, verbose_name="File Link"
+                    ),
+                ),
+                (
+                    "filename",
+                    models.CharField(
+                        blank=True, max_length=1024, verbose_name="File Name"
+                    ),
+                ),
+                (
+                    "uploaded_by",
+                    models.CharField(
+                        blank=True, max_length=255, verbose_name="Uploaded by"
+                    ),
+                ),
+                ("created", models.CharField(max_length=50, verbose_name="Created")),
+                (
+                    "attachment",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="unicef_attachments.Attachment",
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='FileType',
+            name="FileType",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('order', models.PositiveIntegerField(db_index=True, editable=False)),
-                ('name', models.CharField(max_length=64, verbose_name='Name')),
-                ('label', models.CharField(max_length=64, verbose_name='Label')),
-                ('code', models.CharField(default='', max_length=64, verbose_name='Code')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("order", models.PositiveIntegerField(db_index=True, editable=False)),
+                ("name", models.CharField(max_length=64, verbose_name="Name")),
+                ("label", models.CharField(max_length=64, verbose_name="Label")),
+                (
+                    "code",
+                    models.CharField(default="", max_length=64, verbose_name="Code"),
+                ),
             ],
             options={
-                'ordering': ('code', 'order'),
+                "ordering": ("code", "order"),
             },
         ),
         migrations.AlterUniqueTogether(
-            name='filetype',
-            unique_together={('name', 'code')},
+            name="filetype",
+            unique_together={("name", "code")},
         ),
         migrations.AddField(
-            model_name='attachment',
-            name='file_type',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to='unicef_attachments.FileType', verbose_name='Document Type'),
+            model_name="attachment",
+            name="file_type",
+            field=models.ForeignKey(
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                to="unicef_attachments.FileType",
+                verbose_name="Document Type",
+            ),
         ),
         migrations.AddField(
-            model_name='attachment',
-            name='uploaded_by',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='attachments', to=settings.AUTH_USER_MODEL, verbose_name='Uploaded By'),
+            model_name="attachment",
+            name="uploaded_by",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="attachments",
+                to=settings.AUTH_USER_MODEL,
+                verbose_name="Uploaded By",
+            ),
         ),
     ]

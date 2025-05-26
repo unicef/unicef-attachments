@@ -6,13 +6,15 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('unicef_attachments', '0006_auto_20211123_2120'),
+        ("unicef_attachments", "0006_auto_20211123_2120"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='attachment',
-            name='hyperlink',
-            field=models.CharField(blank=True, default='', max_length=1000, verbose_name='Hyperlink'),
+            model_name="attachment",
+            name="hyperlink",
+            field=models.CharField(
+                blank=True, default="", max_length=1000, verbose_name="Hyperlink"
+            ),
         ),
     ]

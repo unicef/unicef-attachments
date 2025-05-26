@@ -6,13 +6,15 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('unicef_attachments', '0002_attachmentlink'),
+        ("unicef_attachments", "0002_attachmentlink"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='filetype',
-            name='order',
-            field=models.PositiveIntegerField(db_index=True, editable=False, verbose_name='order'),
+            model_name="filetype",
+            name="order",
+            field=models.PositiveIntegerField(
+                db_index=True, editable=False, verbose_name="order"
+            ),
         ),
     ]

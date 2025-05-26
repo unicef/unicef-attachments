@@ -20,9 +20,7 @@ def reverse_update(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('unicef_attachments', '0004_filetype_group'),
+        ("unicef_attachments", "0004_filetype_group"),
     ]
 
-    operations = [
-        migrations.RunPython(update_group, reverse_code=reverse_update)
-    ]
+    operations = [migrations.RunPython(update_group, reverse_code=reverse_update)]
